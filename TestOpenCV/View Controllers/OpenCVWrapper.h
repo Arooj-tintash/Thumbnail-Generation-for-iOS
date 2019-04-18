@@ -19,7 +19,7 @@
 //+ (UIImage *)toFilter:(cv::Mat) source;
 
 + (UIImage *)processImage:(UIImage *) source;
-+ (UIImage *)processVideo:(String) videoURLString;
++ (UIImage *)processVideo:(NSString *) videoURLString;
 
 @end
 
