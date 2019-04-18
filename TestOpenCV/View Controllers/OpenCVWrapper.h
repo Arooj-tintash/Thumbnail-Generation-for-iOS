@@ -10,6 +10,7 @@
 #define OpenCVWrapper_h
 
 #import <UIKit/UIKit.h>
+
 //#import <opencv2/opencv.hpp>
 
 @interface OpenCVWrapper : NSObject
@@ -18,6 +19,8 @@
 //+ (UIImage *)toFilter:(cv::Mat) source;
 
 + (UIImage *)processImage:(UIImage *) source;
-@end
++ (UIImage *)processVideo:(String) videoURLString;
+
+@end
 
 #endif /* OpenCVWrapper_h */

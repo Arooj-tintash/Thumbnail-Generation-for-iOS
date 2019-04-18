@@ -35,6 +35,8 @@ using namespace cv;
 + (Mat)_matFrom:(UIImage *)source;
 + (UIImage *)_imageFrom:(Mat)source;
 
++(Mat)_videoParser:(String)filepath;
++(UIImage *)processVideo:(String)filepath;
 #endif
 
 @end
@@ -49,17 +51,25 @@ using namespace cv;
     return [OpenCVWrapper _imageFrom:[OpenCVWrapper _processImage:[OpenCVWrapper _matFrom:source]]];
 }
 
++ (UIImage *)processVideo:(String)filepath {
+    cout << "OpenCV Filters";
+    return [OpenCVWrapper _imageFrom:[OpenCVWrapper _videoParser:filepath]];
+}
+
 #pragma mark Private
 
-+ (Mat) _videoParser:(Mat)source {
++ (Mat) _videoParser:(String)filepath {
     cout << "-> Video Parser ->";
-    return  Mat();
+    cv::VideoCapture capture(filepath);
+    if(!capture.isOpened()) NSLog(@"Could not open testVideo.mp4");
+    cv::Mat frame;
+    for (int i=0; i < 249; i++) {
+        capture.read(frame);
+    }
+   return  frame;
 }
 
-+ (Mat) _readVideo:(Mat)source {
-    cout << "-> Read video ->";
-    return Mat();
-}
+
 + (Mat)_grayFrom:(Mat)source {
     cout << "-> grayFrom ->";
     
@@ -71,7 +81,7 @@ using namespace cv;
 + (Mat)_gaussianBlur:(Mat)source {
     cout << "-> GaussianBlur ->";
     Mat result;
-    cv::Size my_size = Size_<int>(11, 11);
+//    cv::Size my_size = Size_<int>(11, 11);
     
     //cv::blur(source, result, my_size);
     // Dilate
@@ -92,9 +102,16 @@ using namespace cv;
 + (Mat)_processImage:(Mat)source {
     Mat result;
     Mat grayImage;
-    grayImage = [OpenCVWrapper _grayFrom:source];
-    result = [OpenCVWrapper _gaussianBlur:grayImage];
-    return result;
+    Mat videoDemo;
+    String filepath;
+    filepath = "testVideo.mp4";
+    
+//    grayImage = [OpenCVWrapper _grayFrom:source];
+//    result = [OpenCVWrapper _gaussianBlur:grayImage];
+    
+    videoDemo = [OpenCVWrapper _videoParser:filepath];
+//    print(videoDemo);
+    return videoDemo;
 }
 
 
