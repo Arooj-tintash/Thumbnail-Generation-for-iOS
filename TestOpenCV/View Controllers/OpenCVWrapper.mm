@@ -6,23 +6,28 @@
 //  Copyright © 2019 TestOpenCV. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+
 
 #undef NO
 #undef YES
 
 #ifdef __cplusplus
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdocumentation"
+//#pragma clang diagnostic push
+//#pragma clang diagnostic ignored "-Wdocumentation"
 
 #import <opencv2/opencv.hpp>
 #import "OpenCVWrapper.h"
+#import "hecate.h"
 
-#pragma clang pop
+#import <Foundation/Foundation.h>
+//#pragma clang pop
 #endif
 
-using namespace std;
 using namespace cv;
+using namespace std;
+
+#include "ffmpeg_helper.h"
+
 
 #pragma mark - Private Declarations
 
@@ -35,8 +40,10 @@ using namespace cv;
 + (Mat)_matFrom:(UIImage *)source;
 + (UIImage *)_imageFrom:(Mat)source;
 
-+(Mat)_videoParser:(NSString *)filepath;
++(vector<Mat>)_videoParser:(NSString *)filepath;
 +(UIImage *)processVideo:(NSString *)filepath;
+
++(Mat) hecate_code:(NSString *) source;
 #endif
 
 @end
@@ -51,25 +58,79 @@ using namespace cv;
     return [OpenCVWrapper _imageFrom:[OpenCVWrapper _processImage:[OpenCVWrapper _matFrom:source]]];
 }
 
-+ (UIImage *)processVideo:(NSString *)filepath {
++ (UIImage *)processVideo:(NSString *)filepathParam {
     cout << "OpenCV Filters";
-    return [OpenCVWrapper _imageFrom:[OpenCVWrapper _videoParser:filepath]];
+//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,TRUE);
+//    NSString *documentsDirectory = [paths objectAtIndex:0];
+//    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithUTF8String:"testVideo.mp4"]];
+//    const char *cPath = [filePath cStringUsingEncoding:NSMacOSRomanStringEncoding];
+
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"testVideo" ofType:@"mp4"];
+    
+//    vector<Mat> frames = [OpenCVWrapper _videoParser:filePath];
+//    int sizeOfframes =frames.size();
+    Mat videoDemo = [OpenCVWrapper hecate_code:filePath];
+    cout << videoDemo;
+    return [OpenCVWrapper _imageFrom: videoDemo];
+//    return [OpenCVWrapper _imageFrom: frames[sizeOfframes-1]];
 }
 
 #pragma mark Private
 
-+ (Mat) _videoParser:(NSString *)filepath {
++ (vector<Mat>) _videoParser:(NSString *)filepath {
     cout << "-> Video Parser ->";
     std::string _filepath = std::string([filepath UTF8String]);
-    cv::VideoCapture capture(_filepath);
-    if(!capture.isOpened()) NSLog(@"Could not open testVideo.mp4");
-    cv::Mat frame;
-    for (int i=0; i < 249; i++) {
-        capture.read(frame);
+    
+    
+    cv::VideoCapture vidCap = cv::VideoCapture(_filepath);
+    if(!vidCap.isOpened()) NSLog(@"Could not open testVideo.mp4");
+
+    vector<Mat> frames;
+
+    //Seek video to last frame
+    
+    bool isFrame = true;
+    while (isFrame) {
+        cv::Mat frame;
+        isFrame = vidCap.read(frame);
+ 
+        if(isFrame){
+            frames.push_back(frame); //get a new frame
+        }
     }
-   return  frame;
+    printf("No of frames : %d", frames.size());
+   return  frames;
 }
 
++ (Mat) hecate_code:(NSString *) filePath {
+    // Read input params
+    hecate_params opt;
+    // Read input params
+    
+    //hecate_parse_params( filePath, argv, opt );
+    Mat frame;
+    // Run VIDSUM
+    vector<int> v_thumb_idx;
+    vector<hecate::Range> v_gif_range;
+    vector<hecate::Range> v_mov_range;
+    run_hecate( opt, v_thumb_idx, v_gif_range, v_mov_range );
+    
+    // Print debugging info
+    if( opt.debug ) {
+        if( opt.jpg ) {
+            printf("hecate: thumbnail indices: [ ");
+            for(size_t i=0; i<v_thumb_idx.size(); i++)
+                printf("%d ", v_thumb_idx[i]);
+            printf("]\n");
+        }
+    }
+    
+    // Produce results
+    if( opt.jpg ) {
+      frame =  generate_thumbnails( opt, v_thumb_idx );
+    }
+    return frame;
+}
 
 + (Mat)_grayFrom:(Mat)source {
     cout << "-> grayFrom ->";
@@ -82,7 +143,7 @@ using namespace cv;
 + (Mat)_gaussianBlur:(Mat)source {
     cout << "-> GaussianBlur ->";
     Mat result;
-//    cv::Size my_size = Size_<int>(11, 11);
+//    cv::Size my_size = Size_<int>(11, 11);	
     
     //cv::blur(source, result, my_size);
     // Dilate
@@ -104,14 +165,15 @@ using namespace cv;
     Mat result;
     Mat grayImage;
     Mat videoDemo;
-    NSString * filepath = @"testVideo.mp4";
     
-//    grayImage = [OpenCVWrapper _grayFrom:source];
-//    result = [OpenCVWrapper _gaussianBlur:grayImage];
+//    NSString * filepath = @"testVideo.mp4";
     
-    videoDemo = [OpenCVWrapper _videoParser:filepath];
+    grayImage = [OpenCVWrapper _grayFrom:source];
+    result = [OpenCVWrapper _gaussianBlur:grayImage];
+    
+    
 //    print(videoDemo);
-    return videoDemo;
+    return result;
 }
 
 

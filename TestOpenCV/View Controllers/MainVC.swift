@@ -33,14 +33,14 @@ class MainVC: UIViewController {
         let start = CFAbsoluteTimeGetCurrent()
         let startingPoint = Date()
         
-        let lframes = getFrames(startTime: 0, thumbnailSize: CGSize(width: size.width, height: size.height), withAlreadyTrimmedURL: videoUrl, calculateNewFrequency: Int(frameRatio))
-        
-        print("\(startingPoint.timeIntervalSinceNow * -1) seconds elapsed")
+//        let lframes = getFrames(startTime: 0, thumbnailSize: CGSize(width: size.width, height: size.height), withAlreadyTrimmedURL: videoUrl, calculateNewFrequency: Int(frameRatio))
+//
+//        print("\(startingPoint.timeIntervalSinceNow * -1) seconds elapsed")
         
         let diff = CFAbsoluteTimeGetCurrent() - start
         print("Took \(diff) seconds")
        
-        performSegue(withIdentifier: "openImageSegue", sender: lframes)
+        performSegue(withIdentifier: "openImageSegue", sender: videoUrl)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -64,14 +64,23 @@ extension MainVC {
             let data = try Data(contentsOf: url)
             myImage =  UIImage(data: data)
             
-            processImage = OpenCVWrapper.processImage(myImage);
+//            processImage = OpenCVWrapper.processImage(myImage);
             
             let startingPoint = Date()
             guard let videoUrl = getVideoDataFromBundle() else { return nil }
-            NSLog("TAPPED for video")
-            let urlString = videoUrl.absoluteString
-            print(urlString);
-            processImageFromOpenCV = OpenCVWrapper.processVideo(urlString);
+            NSLog("TAPPED for video in getImage from Bundle")
+            let urlString = videoUrl.absoluteString as NSString
+//            print(urlString);
+            
+            var argc = 0;
+            var argv;
+            for arg in CommandLine.arguments {
+                argv = arg;
+                print("argument \(argc) is: \(arg)")
+                argc += 1
+            }
+            print(argc);
+            processImageFromOpenCV = OpenCVWrapper.processVideo(urlString as String);
             print("\(startingPoint.timeIntervalSinceNow * -1) seconds elapsed")
         
         } catch let error {
@@ -80,7 +89,7 @@ extension MainVC {
         }
         
         NSLog("Hello")
-        return processImage
+        return processImageFromOpenCV
     }
     
     func getVideoDataFromBundle() -> URL? {
@@ -89,6 +98,7 @@ extension MainVC {
         guard let urlString = videoArray.first else { return nil }
         let url = URL(fileURLWithPath: urlString)
         print(urlString);
+        
 //        do {
 //            let data = try Data(contentsOf: url)
 //        } catch let error {
