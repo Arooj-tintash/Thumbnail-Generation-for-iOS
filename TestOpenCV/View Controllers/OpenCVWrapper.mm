@@ -65,8 +65,14 @@ using namespace std;
     video_parser *parser = new video_parser();
     struct parser_params opt;
     vector<Mat> videoFrame = parser->parse_video(_filepath, opt);
+
     int sizeOfframes =videoFrame.size();
-    return [OpenCVWrapper _imageFrom: videoFrame[sizeOfframes-1]];
+    
+    Mat selectedFrame = videoFrame[sizeOfframes-1];
+    Mat rgbFrame;
+    cv::cvtColor(selectedFrame, rgbFrame, CV_BGR2RGB);
+    
+    return [OpenCVWrapper _imageFrom: rgbFrame];
 //    return [OpenCVWrapper _imageFrom: frames[sizeOfframes-1]];
 }
 
