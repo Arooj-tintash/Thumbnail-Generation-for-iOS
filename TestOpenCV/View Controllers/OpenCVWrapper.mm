@@ -17,7 +17,6 @@
 
 #import <opencv2/opencv.hpp>
 #import "OpenCVWrapper.h"
-#import "hecate.h"
 
 #import <Foundation/Foundation.h>
 //#pragma clang pop
@@ -26,7 +25,7 @@
 using namespace cv;
 using namespace std;
 
-#include "ffmpeg_helper.h"
+#include "video_parser.h"
 
 
 #pragma mark - Private Declarations
@@ -60,77 +59,73 @@ using namespace std;
 
 + (UIImage *)processVideo:(NSString *)filepathParam {
     cout << "OpenCV Filters";
-//    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask,TRUE);
-//    NSString *documentsDirectory = [paths objectAtIndex:0];
-//    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithUTF8String:"testVideo.mp4"]];
-//    const char *cPath = [filePath cStringUsingEncoding:NSMacOSRomanStringEncoding];
-
     NSString *filePath = [[NSBundle mainBundle] pathForResource:@"testVideo" ofType:@"mp4"];
+    std::string _filepath = std::string([filePath UTF8String]);
     
-//    vector<Mat> frames = [OpenCVWrapper _videoParser:filePath];
-//    int sizeOfframes =frames.size();
-    Mat videoDemo = [OpenCVWrapper hecate_code:filePath];
-    cout << videoDemo;
-    return [OpenCVWrapper _imageFrom: videoDemo];
+    video_parser *parser = new video_parser();
+    struct parser_params opt;
+    vector<Mat> videoFrame = parser->parse_video(_filepath, opt);
+    int sizeOfframes =videoFrame.size();
+    return [OpenCVWrapper _imageFrom: videoFrame[sizeOfframes-1]];
 //    return [OpenCVWrapper _imageFrom: frames[sizeOfframes-1]];
 }
 
 #pragma mark Private
 
-+ (vector<Mat>) _videoParser:(NSString *)filepath {
-    cout << "-> Video Parser ->";
-    std::string _filepath = std::string([filepath UTF8String]);
-    
-    
-    cv::VideoCapture vidCap = cv::VideoCapture(_filepath);
-    if(!vidCap.isOpened()) NSLog(@"Could not open testVideo.mp4");
-
-    vector<Mat> frames;
-
-    //Seek video to last frame
-    
-    bool isFrame = true;
-    while (isFrame) {
-        cv::Mat frame;
-        isFrame = vidCap.read(frame);
- 
-        if(isFrame){
-            frames.push_back(frame); //get a new frame
-        }
-    }
-    printf("No of frames : %d", frames.size());
-   return  frames;
-}
-
-+ (Mat) hecate_code:(NSString *) filePath {
-    // Read input params
-    hecate_params opt;
-    // Read input params
-    
-    //hecate_parse_params( filePath, argv, opt );
-    Mat frame;
-    // Run VIDSUM
-    vector<int> v_thumb_idx;
-    vector<hecate::Range> v_gif_range;
-    vector<hecate::Range> v_mov_range;
-    run_hecate( opt, v_thumb_idx, v_gif_range, v_mov_range );
-    
-    // Print debugging info
-    if( opt.debug ) {
-        if( opt.jpg ) {
-            printf("hecate: thumbnail indices: [ ");
-            for(size_t i=0; i<v_thumb_idx.size(); i++)
-                printf("%d ", v_thumb_idx[i]);
-            printf("]\n");
-        }
-    }
-    
-    // Produce results
-    if( opt.jpg ) {
-      frame =  generate_thumbnails( opt, v_thumb_idx );
-    }
-    return frame;
-}
+//+ (vector<Mat>) _videoParser:(NSString *)filepath {
+//    cout << "-> Video Parser ->";
+//    std::string _filepath = std::string([filepath UTF8String]);
+//
+//
+//    cv::VideoCapture vidCap = cv::VideoCapture(_filepath);
+//    if(!vidCap.isOpened()) NSLog(@"Could not open testVideo.mp4");
+//
+//    vector<Mat> frames;
+//
+//    //Seek video to last frame
+//
+//    bool isFrame = true;
+//    while (isFrame) {
+//        cv::Mat frame;
+//        isFrame = vidCap.read(frame);
+//
+//        if(isFrame){
+//            frames.push_back(frame); //get a new frame
+//        }
+//    }
+//    cout << "No of frames: " << frames.size();
+//   return  frames;
+//}
+//
+//+ (Mat) hecate_code:(NSString *) filePath {
+//    // Read input params
+//    hecate_params opt;
+//    // Read input params
+//
+//    //hecate_parse_params( filePath, argv, opt );
+//    Mat frame;
+//    // Run VIDSUM
+//    vector<int> v_thumb_idx;
+//    vector<hecate::Range> v_gif_range;
+//    vector<hecate::Range> v_mov_range;
+//    run_hecate( opt, v_thumb_idx, v_gif_range, v_mov_range );
+//
+//    // Print debugging info
+//    if( opt.debug ) {
+//        if( opt.jpg ) {
+//            printf("hecate: thumbnail indices: [ ");
+//            for(size_t i=0; i<v_thumb_idx.size(); i++)
+//                printf("%d ", v_thumb_idx[i]);
+//            printf("]\n");
+//        }
+//    }
+//
+//    // Produce results
+//    if( opt.jpg ) {
+//      frame =  generate_thumbnails( opt, v_thumb_idx );
+//    }
+//    return frame;
+//}
 
 + (Mat)_grayFrom:(Mat)source {
     cout << "-> grayFrom ->";

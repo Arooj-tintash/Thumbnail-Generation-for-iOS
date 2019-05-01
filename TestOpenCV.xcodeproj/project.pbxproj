@@ -8,15 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		86A79A3DCA3EEDB53FD66DCC /* Pods_TestOpenCV.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 659EE2BFD331BC3CBADA20F0 /* Pods_TestOpenCV.framework */; };
+		9A1D674D22787D9500A0585D /* gflseg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A1D674C22787D9400A0585D /* gflseg.cpp */; };
 		9A2C29682265FBE300B540A4 /* VideoViewVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2C29672265FBE300B540A4 /* VideoViewVC.swift */; };
+		9A78ABA1226DED7400E6C32C /* video_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A78AB9F226DED7400E6C32C /* video_parser.cpp */; };
 		9A893E132265EDC80064164E /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9A893E112265EDC80064164E /* OpenCVWrapper.mm */; };
 		9A893E152265EE3D0064164E /* fruits.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9A893E142265EE3D0064164E /* fruits.jpg */; };
-		9ADDEA99226B627B00A55D3B /* gflseg.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9ADDEA97226B627B00A55D3B /* gflseg.mm */; };
-		9ADDEAAE226B655000A55D3B /* video_parser.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9ADDEAAD226B655000A55D3B /* video_parser.mm */; };
-		9ADDEAB4226B65E900A55D3B /* hecate_highlight.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9ADDEAB3226B65E900A55D3B /* hecate_highlight.mm */; };
-		9ADDEAB6226B65FA00A55D3B /* hecate_thumbnail.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9ADDEAB5226B65FA00A55D3B /* hecate_thumbnail.mm */; };
-		9ADDEABC226B666F00A55D3B /* hecate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9ADDEABB226B666F00A55D3B /* hecate.mm */; };
-		9AEC0489226D9E66005047AD /* hecate_main.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9AEC0488226D9E66005047AD /* hecate_main.mm */; };
 		9AEEC6A02268BCAA004FF9ED /* testVideo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 9AEEC69F2268BCAA004FF9ED /* testVideo.mp4 */; };
 		B4E6DA152255F7D4005844D4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E6DA142255F7D4005844D4 /* AppDelegate.swift */; };
 		B4E6DA1A2255F7D4005844D4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B4E6DA182255F7D4005844D4 /* Main.storyboard */; };
@@ -30,30 +26,20 @@
 		19AB67C719D470775DA7C756 /* Pods-TestOpenCV.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestOpenCV.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TestOpenCV/Pods-TestOpenCV.debug.xcconfig"; sourceTree = "<group>"; };
 		659EE2BFD331BC3CBADA20F0 /* Pods_TestOpenCV.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TestOpenCV.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		87A31E6B3BFDE57F217E99EF /* Pods-TestOpenCV.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TestOpenCV.release.xcconfig"; path = "Pods/Target Support Files/Pods-TestOpenCV/Pods-TestOpenCV.release.xcconfig"; sourceTree = "<group>"; };
+		9A1D674622781A0700A0585D /* image_metrics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = image_metrics.h; sourceTree = "<group>"; };
+		9A1D674822783C4B00A0585D /* hist_opencv.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hist_opencv.h; sourceTree = "<group>"; };
+		9A1D674A2278622400A0585D /* my_sort.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = my_sort.h; sourceTree = "<group>"; };
+		9A1D674B2278746200A0585D /* gflseg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gflseg.h; sourceTree = "<group>"; };
+		9A1D674C22787D9400A0585D /* gflseg.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = gflseg.cpp; sourceTree = "<group>"; };
+		9A1D674E227881A800A0585D /* shot_range.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = shot_range.h; sourceTree = "<group>"; };
+		9A1D674F22788FF600A0585D /* gapstat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gapstat.h; sourceTree = "<group>"; };
 		9A2C29672265FBE300B540A4 /* VideoViewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewVC.swift; sourceTree = "<group>"; };
+		9A78AB9F226DED7400E6C32C /* video_parser.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = video_parser.cpp; sourceTree = "<group>"; };
+		9A78ABA0226DED7400E6C32C /* video_parser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = video_parser.h; sourceTree = "<group>"; };
 		9A893E102265EDC70064164E /* TestOpenCV-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TestOpenCV-Bridging-Header.h"; sourceTree = "<group>"; };
 		9A893E112265EDC80064164E /* OpenCVWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVWrapper.mm; sourceTree = "<group>"; };
 		9A893E122265EDC80064164E /* OpenCVWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenCVWrapper.h; sourceTree = "<group>"; };
 		9A893E142265EE3D0064164E /* fruits.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = fruits.jpg; sourceTree = "<group>"; };
-		9ADDEA92226B60CD00A55D3B /* cc_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cc_parser.h; sourceTree = "<group>"; };
-		9ADDEA93226B615200A55D3B /* time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = time.h; sourceTree = "<group>"; };
-		9ADDEA94226B616C00A55D3B /* ffmpeg_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ffmpeg_helper.h; sourceTree = "<group>"; };
-		9ADDEA95226B61D400A55D3B /* file_helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = file_helper.h; sourceTree = "<group>"; };
-		9ADDEA96226B627A00A55D3B /* gflseg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gflseg.h; sourceTree = "<group>"; };
-		9ADDEA97226B627B00A55D3B /* gflseg.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = gflseg.mm; sourceTree = "<group>"; };
-		9ADDEA98226B627B00A55D3B /* gapstat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gapstat.h; sourceTree = "<group>"; };
-		9ADDEA9A226B632600A55D3B /* sort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sort.h; sourceTree = "<group>"; };
-		9ADDEAAC226B654800A55D3B /* video_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = video_parser.h; path = ../../../../hecate/video_parser.h; sourceTree = "<group>"; };
-		9ADDEAAD226B655000A55D3B /* video_parser.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = video_parser.mm; path = ../../../../hecate/video_parser.mm; sourceTree = "<group>"; };
-		9ADDEAAF226B657600A55D3B /* shot_range.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = shot_range.h; path = ../../../../hecate/shot_range.h; sourceTree = "<group>"; };
-		9ADDEAB0226B658800A55D3B /* knapsack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = knapsack.h; path = ../../../../hecate/knapsack.h; sourceTree = "<group>"; };
-		9ADDEAB1226B65CA00A55D3B /* image_metrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = image_metrics.h; path = ../../../../hecate/image_metrics.h; sourceTree = "<group>"; };
-		9ADDEAB2226B65D900A55D3B /* hist_opencv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = hist_opencv.h; path = ../../../../hecate/hist_opencv.h; sourceTree = "<group>"; };
-		9ADDEAB3226B65E900A55D3B /* hecate_highlight.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = hecate_highlight.mm; path = ../../../../hecate/hecate_highlight.mm; sourceTree = "<group>"; };
-		9ADDEAB5226B65FA00A55D3B /* hecate_thumbnail.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = hecate_thumbnail.mm; path = ../../../../hecate/hecate_thumbnail.mm; sourceTree = "<group>"; };
-		9ADDEABA226B665300A55D3B /* hecate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = hecate.h; path = ../../../../hecate/hecate.h; sourceTree = "<group>"; };
-		9ADDEABB226B666F00A55D3B /* hecate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = hecate.mm; path = ../../../../hecate/hecate.mm; sourceTree = "<group>"; };
-		9AEC0488226D9E66005047AD /* hecate_main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = hecate_main.mm; sourceTree = "<group>"; };
 		9AEEC69F2268BCAA004FF9ED /* testVideo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = testVideo.mp4; sourceTree = "<group>"; };
 		B4E6DA112255F7D4005844D4 /* TestOpenCV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestOpenCV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4E6DA142255F7D4005844D4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -97,6 +83,15 @@
 		9A78AB9E226DEA5000E6C32C /* thumbnail_generator */ = {
 			isa = PBXGroup;
 			children = (
+				9A78AB9F226DED7400E6C32C /* video_parser.cpp */,
+				9A78ABA0226DED7400E6C32C /* video_parser.h */,
+				9A1D674622781A0700A0585D /* image_metrics.h */,
+				9A1D674822783C4B00A0585D /* hist_opencv.h */,
+				9A1D674A2278622400A0585D /* my_sort.h */,
+				9A1D674B2278746200A0585D /* gflseg.h */,
+				9A1D674C22787D9400A0585D /* gflseg.cpp */,
+				9A1D674E227881A800A0585D /* shot_range.h */,
+				9A1D674F22788FF600A0585D /* gapstat.h */,
 			);
 			path = thumbnail_generator;
 			sourceTree = "<group>";
@@ -104,25 +99,6 @@
 		9ADDEA91226B60CD00A55D3B /* hecate */ = {
 			isa = PBXGroup;
 			children = (
-				9ADDEABB226B666F00A55D3B /* hecate.mm */,
-				9ADDEABA226B665300A55D3B /* hecate.h */,
-				9ADDEAB5226B65FA00A55D3B /* hecate_thumbnail.mm */,
-				9ADDEAB3226B65E900A55D3B /* hecate_highlight.mm */,
-				9ADDEAB2226B65D900A55D3B /* hist_opencv.h */,
-				9ADDEAB1226B65CA00A55D3B /* image_metrics.h */,
-				9ADDEAB0226B658800A55D3B /* knapsack.h */,
-				9ADDEAAF226B657600A55D3B /* shot_range.h */,
-				9ADDEAAD226B655000A55D3B /* video_parser.mm */,
-				9ADDEAAC226B654800A55D3B /* video_parser.h */,
-				9ADDEA9A226B632600A55D3B /* sort.h */,
-				9ADDEA98226B627B00A55D3B /* gapstat.h */,
-				9ADDEA96226B627A00A55D3B /* gflseg.h */,
-				9ADDEA97226B627B00A55D3B /* gflseg.mm */,
-				9ADDEA95226B61D400A55D3B /* file_helper.h */,
-				9ADDEA94226B616C00A55D3B /* ffmpeg_helper.h */,
-				9ADDEA93226B615200A55D3B /* time.h */,
-				9ADDEA92226B60CD00A55D3B /* cc_parser.h */,
-				9AEC0488226D9E66005047AD /* hecate_main.mm */,
 			);
 			path = hecate;
 			sourceTree = "<group>";
@@ -295,17 +271,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A78ABA1226DED7400E6C32C /* video_parser.cpp in Sources */,
+				9A1D674D22787D9500A0585D /* gflseg.cpp in Sources */,
 				9A893E132265EDC80064164E /* OpenCVWrapper.mm in Sources */,
-				9ADDEA99226B627B00A55D3B /* gflseg.mm in Sources */,
 				B4E6DA272255F972005844D4 /* ImageViewVC.swift in Sources */,
 				B4E6DA292255FE6A005844D4 /* MainVC.swift in Sources */,
-				9ADDEAB4226B65E900A55D3B /* hecate_highlight.mm in Sources */,
 				9A2C29682265FBE300B540A4 /* VideoViewVC.swift in Sources */,
-				9ADDEAB6226B65FA00A55D3B /* hecate_thumbnail.mm in Sources */,
-				9ADDEABC226B666F00A55D3B /* hecate.mm in Sources */,
 				B4E6DA152255F7D4005844D4 /* AppDelegate.swift in Sources */,
-				9ADDEAAE226B655000A55D3B /* video_parser.mm in Sources */,
-				9AEC0489226D9E66005047AD /* hecate_main.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
