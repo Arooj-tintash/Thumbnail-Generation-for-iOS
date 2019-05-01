@@ -16,31 +16,17 @@ class MainVC: UIViewController {
 
     
     @IBAction func photoTapped(_ sender: Any) {
+        NSLog("TAPPED on image")
         let image = getImageFromBundle()
-        NSLog("TAPPED")
         performSegue(withIdentifier: "openImageSegue", sender: image)
     }
 
     @IBAction func videoTapped(_ sender: Any) {
-        guard let videoUrl = getVideoDataFromBundle() else { return }
-        NSLog("TAPPED for video")
-        let urlAsset = AVURLAsset(url: videoUrl)
-        guard let track = urlAsset.tracks.first else { return }
-        let frameRatio = track.nominalFrameRate
-        //print(frameRatio)
-        let size = track.naturalSize.applying(track.preferredTransform)
-        
-        let start = CFAbsoluteTimeGetCurrent()
+        NSLog("TAPPED on video")
         let startingPoint = Date()
-        
-//        let lframes = getFrames(startTime: 0, thumbnailSize: CGSize(width: size.width, height: size.height), withAlreadyTrimmedURL: videoUrl, calculateNewFrequency: Int(frameRatio))
-//
-//        print("\(startingPoint.timeIntervalSinceNow * -1) seconds elapsed")
-        
-        let diff = CFAbsoluteTimeGetCurrent() - start
-        print("Took \(diff) seconds")
-       
-        performSegue(withIdentifier: "openImageSegue", sender: videoUrl)
+        let image = getVideoDataFromBundle()
+        print("\(startingPoint.timeIntervalSinceNow * -1) seconds elapsed")
+        performSegue(withIdentifier: "openImageSegue", sender: image)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -57,58 +43,35 @@ extension MainVC {
         let imageArray = Bundle.main.paths(forResourcesOfType: "jpg", inDirectory: nil)
         var myImage : UIImage?  = nil
         var processImage : UIImage? = nil
-        var processImageFromOpenCV : UIImage? = nil
         guard let urlString = imageArray.first else { return nil }
         let url = URL(fileURLWithPath: urlString)
         do {
             let data = try Data(contentsOf: url)
             myImage =  UIImage(data: data)
+            processImage = OpenCVWrapper.processImage(myImage);
             
-//            processImage = OpenCVWrapper.processImage(myImage);
-            
-            let startingPoint = Date()
-            guard let videoUrl = getVideoDataFromBundle() else { return nil }
-            NSLog("TAPPED for video in getImage from Bundle")
-            let urlString = videoUrl.absoluteString as NSString
-//            print(urlString);
-            
-            var argc = 0;
-            var argv;
-            for arg in CommandLine.arguments {
-                argv = arg;
-                print("argument \(argc) is: \(arg)")
-                argc += 1
-            }
-            print(argc);
-            processImageFromOpenCV = OpenCVWrapper.processVideo(urlString as String);
-            print("\(startingPoint.timeIntervalSinceNow * -1) seconds elapsed")
-        
         } catch let error {
             print(error.localizedDescription)
             
         }
-        
-        NSLog("Hello")
-        return processImageFromOpenCV
+        return processImage
     }
     
-    func getVideoDataFromBundle() -> URL? {
+    func getVideoDataFromBundle() -> UIImage? {
         let videoArray = Bundle.main.paths(forResourcesOfType: "mp4", inDirectory: nil)
-        //var data : Data?  = nil
+        var processImageFromOpenCV : UIImage? = nil;
         guard let urlString = videoArray.first else { return nil }
         let url = URL(fileURLWithPath: urlString)
-        print(urlString);
-        
+        let absURL = url.absoluteString as NSString
+        print(absURL);
+        processImageFromOpenCV = OpenCVWrapper.processVideo(absURL as String);
 //        do {
 //            let data = try Data(contentsOf: url)
 //        } catch let error {
 //            print(error.localizedDescription)
 //        }
-        return url
+        return processImageFromOpenCV
     }
-    
-    
-    
     
     func getFrames(startTime: Int, thumbnailSize: CGSize, withAlreadyTrimmedURL trimmedURL: URL?, calculateNewFrequency frames:Int) -> UIImage{
         
