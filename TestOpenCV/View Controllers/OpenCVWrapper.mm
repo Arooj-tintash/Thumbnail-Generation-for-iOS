@@ -165,15 +165,10 @@ using namespace std;
 + (Mat)_processImage:(Mat)source {
     Mat result;
     Mat grayImage;
-    Mat videoDemo;
-    
-//    NSString * filepath = @"testVideo.mp4";
     
     grayImage = [OpenCVWrapper _grayFrom:source];
     result = [OpenCVWrapper _gaussianBlur:grayImage];
     
-    
-//    print(videoDemo);
     return result;
 }
 
