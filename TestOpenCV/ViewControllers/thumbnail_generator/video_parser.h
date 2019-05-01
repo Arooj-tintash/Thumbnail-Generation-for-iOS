@@ -57,32 +57,33 @@ struct video_metadata {
     double fps;
 };
 
-    struct parser_params {
-        double fltr_begin_sec;
-        double fltr_end_sec;
-        double max_duration;
-        int step_sz;
-        bool ignore_rest; // if video is too long, ignore the rest (true) or
-        // adjust step_sz (false). for vidtag this should be
-        // false, while for hecate this should be true
-        bool gfl;      // use group-fused lasso to refine boundaries
-        bool fltr_rdt; // filter redundant frames
-        bool debug;
-        
-        parser_params():
-        fltr_begin_sec(0),
-        fltr_end_sec(0),
-        max_duration(-1),
-        gfl(false),
-        step_sz(1),
-        fltr_rdt(true),
-        ignore_rest(false),
-        debug(false)
-        {};
+struct parser_params {
+    double fltr_begin_sec;
+    double fltr_end_sec;
+    double max_duration;
+    int step_sz;
+    bool ignore_rest; // if video is too long, ignore the rest (true) or
+    // adjust step_sz (false). for vidtag this should be
+    // false, while for hecate this should be true
+    bool gfl;      // use group-fused lasso to refine boundaries
+    bool fltr_rdt; // filter redundant frames
+    bool debug;
+    
+    parser_params():
+    fltr_begin_sec(0),
+    fltr_end_sec(0),
+    max_duration(-1),
+    gfl(false),
+    step_sz(1),
+    fltr_rdt(true),
+    ignore_rest(false),
+    debug(false)
+    {};
 };
     
 class video_parser {
 public:
+    //Return all the frames for video
     vector<Mat> parse_video(const string& in_video, parser_params opt);
     
     /* Get the number of valid frames */
@@ -92,18 +93,14 @@ private:
     /* Read video into the memory */
     vector<Mat> read_video(const string& in_video,
                            int step_sz=1,
-                           double max_duration=30*60,
-                           bool ignore_rest=false,
+                           double max_duration=30*20,
+                           bool ignore_rest=true,
                            int max_frm_len=160);
-    
-    
-    /* Filter first end last few frames */
-    vector<Mat> filter_heuristic(vector<Mat> frames, double step_sz, double fltr_begin_sec=0, double fltr_end_sec=0);
     
     /* Filter out low-quality frames */
     vector<Mat> filter_low_quality(vector<Mat> frames, double thrsh_bright=0.075,
                             double thrsh_sharp=0.08,
-                            double thrsh_uniform=0.80 );
+                            double thrsh_uniform=0.80);
     
     /* Filter out frames during transition */
     vector<Mat> filter_transition(double thrsh_diff=0.50,
@@ -155,7 +152,6 @@ private:
     Mat _X_ecr;  // n-by-1 ecr first-order derivative
     
     vector<Mat> _v_frm_rgb;       // rgb frames
-    vector<Mat> _v_frm_bgr;
     vector<Mat> _v_frm_gray;      // gray-scale frames
     
     vector<ShotRange> _v_shot_ranges;

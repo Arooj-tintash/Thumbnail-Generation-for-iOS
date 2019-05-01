@@ -135,7 +135,7 @@
 				9AEEC69E2268BCAA004FF9ED /* Documents */,
 				B4E6DA2C22560107005844D4 /* Images */,
 				B4E6DA2B2255FEA2005844D4 /* Storyboards */,
-				B4E6DA2A2255FE88005844D4 /* View Controllers */,
+				B4E6DA2A2255FE88005844D4 /* ViewControllers */,
 				B4E6DA142255F7D4005844D4 /* AppDelegate.swift */,
 				B4E6DA1B2255F7D6005844D4 /* Assets.xcassets */,
 				B4E6DA202255F7D6005844D4 /* Info.plist */,
@@ -143,7 +143,7 @@
 			path = TestOpenCV;
 			sourceTree = "<group>";
 		};
-		B4E6DA2A2255FE88005844D4 /* View Controllers */ = {
+		B4E6DA2A2255FE88005844D4 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
 				9A78AB9E226DEA5000E6C32C /* thumbnail_generator */,
@@ -155,7 +155,7 @@
 				9A893E102265EDC70064164E /* TestOpenCV-Bridging-Header.h */,
 				9A2C29672265FBE300B540A4 /* VideoViewVC.swift */,
 			);
-			path = "View Controllers";
+			path = ViewControllers;
 			sourceTree = "<group>";
 		};
 		B4E6DA2B2255FEA2005844D4 /* Storyboards */ = {
@@ -437,7 +437,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.TestOpenCV.TestOpenCV;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "TestOpenCV/View Controllers/TestOpenCV-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "TestOpenCV/ViewControllers/TestOpenCV-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_REFLECTION_METADATA_LEVEL = none;
 				SWIFT_VERSION = 4.2;
@@ -463,7 +463,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.TestOpenCV.TestOpenCV;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "TestOpenCV/View Controllers/TestOpenCV-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "TestOpenCV/ViewControllers/TestOpenCV-Bridging-Header.h";
 				SWIFT_REFLECTION_METADATA_LEVEL = none;
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";

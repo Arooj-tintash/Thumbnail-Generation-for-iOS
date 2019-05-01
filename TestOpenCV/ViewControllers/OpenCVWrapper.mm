@@ -27,22 +27,20 @@ using namespace std;
 
 #include "video_parser.h"
 
-
 #pragma mark - Private Declarations
 
 @interface OpenCVWrapper ()
 
 #ifdef __cplusplus
 
-+ (Mat)_grayFrom:(Mat)source;
++ (Mat) _grayFrom:(Mat)source;
 + (Mat) _gaussianBlur:(Mat)source;
+
 + (Mat)_matFrom:(UIImage *)source;
 + (UIImage *)_imageFrom:(Mat)source;
 
-+(vector<Mat>)_videoParser:(NSString *)filepath;
-+(UIImage *)processVideo:(NSString *)filepath;
++(UIImage *) processVideo:(NSString *)filepath;
 
-+(Mat) hecate_code:(NSString *) source;
 #endif
 
 @end
@@ -66,72 +64,16 @@ using namespace std;
     struct parser_params opt;
     vector<Mat> videoFrame = parser->parse_video(_filepath, opt);
 
-    int sizeOfframes =videoFrame.size();
+    size_t sizeOfframes =videoFrame.size();
     
     Mat selectedFrame = videoFrame[sizeOfframes-1];
     Mat rgbFrame;
     cv::cvtColor(selectedFrame, rgbFrame, CV_BGR2RGB);
     
     return [OpenCVWrapper _imageFrom: rgbFrame];
-//    return [OpenCVWrapper _imageFrom: frames[sizeOfframes-1]];
 }
 
 #pragma mark Private
-
-//+ (vector<Mat>) _videoParser:(NSString *)filepath {
-//    cout << "-> Video Parser ->";
-//    std::string _filepath = std::string([filepath UTF8String]);
-//
-//
-//    cv::VideoCapture vidCap = cv::VideoCapture(_filepath);
-//    if(!vidCap.isOpened()) NSLog(@"Could not open testVideo.mp4");
-//
-//    vector<Mat> frames;
-//
-//    //Seek video to last frame
-//
-//    bool isFrame = true;
-//    while (isFrame) {
-//        cv::Mat frame;
-//        isFrame = vidCap.read(frame);
-//
-//        if(isFrame){
-//            frames.push_back(frame); //get a new frame
-//        }
-//    }
-//    cout << "No of frames: " << frames.size();
-//   return  frames;
-//}
-//
-//+ (Mat) hecate_code:(NSString *) filePath {
-//    // Read input params
-//    hecate_params opt;
-//    // Read input params
-//
-//    //hecate_parse_params( filePath, argv, opt );
-//    Mat frame;
-//    // Run VIDSUM
-//    vector<int> v_thumb_idx;
-//    vector<hecate::Range> v_gif_range;
-//    vector<hecate::Range> v_mov_range;
-//    run_hecate( opt, v_thumb_idx, v_gif_range, v_mov_range );
-//
-//    // Print debugging info
-//    if( opt.debug ) {
-//        if( opt.jpg ) {
-//            printf("hecate: thumbnail indices: [ ");
-//            for(size_t i=0; i<v_thumb_idx.size(); i++)
-//                printf("%d ", v_thumb_idx[i]);
-//            printf("]\n");
-//        }
-//    }
-//
-//    // Produce results
-//    if( opt.jpg ) {
-//      frame =  generate_thumbnails( opt, v_thumb_idx );
-//    }
-//    return frame;
-//}
 
 + (Mat)_grayFrom:(Mat)source {
     cout << "-> grayFrom ->";
@@ -167,9 +109,8 @@ using namespace std;
     Mat grayImage;
     
     grayImage = [OpenCVWrapper _grayFrom:source];
-    result = [OpenCVWrapper _gaussianBlur:grayImage];
     
-    return result;
+    return grayImage;
 }
 
 

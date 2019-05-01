@@ -7,26 +7,10 @@
 //
 
 #include <stdio.h>
-
-//
-//  video_parser.m
-//  TestOpenCV
-//
-//  Created by Mac Mini on 19/04/2019.
-//  Copyright © 2019 TestOpenCV. All rights reserved.
-//
-
-//#import <Foundation/Foundation.h>
-
 #include "video_parser.h"
-//#include "image_metrics.h"
-//#include "hist_opencv.h"
-//#include "my_sort.h"
-//#include "gflseg.h"
 
 using namespace std;
 using namespace cv;
-
 
 /*-----------------------------------------------------------------------*/
 vector<Mat> video_parser::parse_video(const string& filepath, parser_params opt)
@@ -45,14 +29,10 @@ vector<Mat> video_parser::parse_video(const string& filepath, parser_params opt)
     //    meta.fps      = _video_fps;
     //    meta.duration = _video_sec;
     
-    vector<Mat> heuristic_frm;
     vector<Mat> sharpness_frm;
     vector<Mat> transition_frm;
-    // Frame filtering
-//        if( opt.fltr_begin_sec>.0 || opt.fltr_end_sec>.0 )
-    heuristic_frm = filter_heuristic(gray_frm, opt.step_sz, opt.fltr_begin_sec, opt.fltr_end_sec);
     
-    sharpness_frm = filter_low_quality(heuristic_frm);
+    sharpness_frm = filter_low_quality(sharpness_frm);
     transition_frm = filter_transition();
     
     // Post-process (break up shots if too long)
@@ -142,18 +122,14 @@ vector<Mat> video_parser::read_video(const string& _filepath, int step_sz,
     
     // RGB2GRAY
     _v_frm_gray.assign( _nfrm_given, Mat() );
-    _v_frm_bgr.assign(_nfrm_given, Mat());
     
 #pragma omp parallel for
     for( int i=0; i<_nfrm_given; i++ )
     {
         Mat frm_gray;
-        Mat frm_rgb;
-        cvtColor( _v_frm_rgb[i], frm_rgb, CV_BGR2RGB );
         cvtColor( _v_frm_rgb[i], frm_gray, CV_BGR2GRAY );
         GaussianBlur( frm_gray, frm_gray, Size(3,3), 0, 0 );
         frm_gray.copyTo( _v_frm_gray[i] );
-        frm_rgb.copyTo(_v_frm_bgr[i]);
     }
     
     _v_frm_valid.assign( _nfrm_given, true );
@@ -164,71 +140,8 @@ vector<Mat> video_parser::read_video(const string& _filepath, int step_sz,
     _X_diff = Mat( _nfrm_given, 1, CV_64F, Scalar(0,0,0)[0] );
     _X_ecr  = Mat( _nfrm_given, 1, CV_64F, Scalar(0,0,0)[0] );
     
-    ////        vector<Mat> _v_frm_rgb;
-    ////        vector<Mat> _v_frm_gray;
-    //        _nfrm_total = 0;
-    //
-    //
-    //        //Seek video to last frame
-    //        bool isFrame = true;
-    //        while (isFrame) {
-    //            cv::Mat frame;
-    //            isFrame = vidCap.read(frame);
-    //
-    //            if(isFrame){
-    //                _v_frm_rgb.push_back(frame); //get a new frame
-    //                _v_frm_gray.push_back(frame); //get a new frame
-    //            }
-    //            _nfrm_total++;
-    //        }
-    //    cout << "No of frames: " << _v_frm_rgb.size() << " " << _nfrm_total;
-    //    _nfrm_given = (int) _v_frm_rgb.size();
-    //    // RGB2GRAY
-    //    _v_frm_gray.assign( _nfrm_given, Mat() );
-    //
-    //    for( int i=0; i<_nfrm_given; i++ )
-    //        {
-    //            Mat frm_gray;
-    //            cvtColor( _v_frm_rgb[i], frm_gray, CV_BGR2GRAY );
-    ////            cv::Size my_size = Size_<int>(11, 11);
-    //            GaussianBlur( frm_gray, _v_frm_gray[i], cv::Size(3,3), 0, 0 );
-    //        }
-    //
-    //    _v_frm_log.assign( _nfrm_given, " " );
-    //    _v_frm_valid.assign( _nfrm_given, true );
-    //
-    //    _X_diff = Mat( _nfrm_given, 1, CV_64F, Scalar(0,0,0)[0] );
-    //    _X_ecr  = Mat( _nfrm_given, 1, CV_64F, Scalar(0,0,0)[0] );
-    //
-    return  _v_frm_bgr;
+    return  _v_frm_gray;
 }
-
-/*------------------------------------------------------------------------
- Manually invalidate first and last frames (heuristic)
- ------------------------------------------------------------------------*/
-
-vector<Mat> video_parser::filter_heuristic(vector<Mat> frames, double _step_sz, double fltr_begin_sec, double fltr_end_sec)
-/*-----------------------------------------------------------------------*/
-{
-     cout << "-> Filter Heuristic ->";
-    
-    vector<Mat> heuristic_vector;
-    
-    int fltr_begin_nfrms = ceil(fltr_begin_sec * _video_fps / (double)_step_sz);
-    int fltr_end_nfrms = ceil(fltr_end_sec * _video_fps / (double)_step_sz);
-    
-    for(int i=0; i<fltr_begin_nfrms; i++)
-        mark_invalid(_v_frm_valid, _v_frm_log, i, "[Begin]");
-    for(int i=0; i<fltr_end_nfrms; i++)
-        mark_invalid(_v_frm_valid, _v_frm_log, _nfrm_total-1-i, "[End]");
-    
-    for(int i=1; i < frames.size()-1; i++) {
-        heuristic_vector.push_back(frames[i]);
-    }
-    cout << "\n Frame count after removing first and last frame " << heuristic_vector.size();
-    return heuristic_vector;
-}
-
 
 /*------------------------------------------------------------------------
  Use a collection of heuristics to filter out low-quality frames.
