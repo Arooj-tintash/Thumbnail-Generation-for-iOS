@@ -61,19 +61,6 @@ using namespace std;
     std::string _filepath = std::string([filePath UTF8String]);
     
     video_parser *parser = new video_parser();
-//    struct parser_params opt;
-//    vector<ShotRange> v_shot_ranges = parser->parse_video(_filepath, opt);
-//    if( v_shot_ranges.empty() ) {
-//        fprintf(stderr, "run_hecate: Failed to parse the video\n");
-//    }
-//
-//    for(size_t i=0; i<v_shot_ranges.size(); i++) {
-//        printf("[%d:%d]", v_shot_ranges[i].start, v_shot_ranges[i].end);
-//        if( i<v_shot_ranges.size()-1 )
-//            printf(",");
-//    }
-    
-    
     vector<Mat> videoFrame = parser->frameExtraction(_filepath);
 
     size_t sizeOfframes =videoFrame.size();
@@ -82,7 +69,7 @@ using namespace std;
     Mat rgbFrame;
     cv::cvtColor(selectedFrame, rgbFrame, CV_BGR2RGB);
     
-    return [OpenCVWrapper _imageFrom: selectedFrame];
+    return [OpenCVWrapper _imageFrom: rgbFrame];
 }
 
 #pragma mark Private
@@ -149,49 +136,20 @@ using namespace std;
 + (UIImage *)_imageFrom:(Mat)source {
     cout << "-> imageFrom\n";
     
-//    NSData *data = [NSData dataWithBytes:source.data length:source.elemSize() * source.total()];
-//    CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
-//
-//    CGBitmapInfo bitmapFlags = kCGImageAlphaNone | kCGBitmapByteOrderDefault;
-//    size_t bitsPerComponent = 8;
-//    size_t bytesPerRow = source.step[0];
-//    CGColorSpaceRef colorSpace = (source.elemSize() == 1 ? CGColorSpaceCreateDeviceGray() : CGColorSpaceCreateDeviceRGB());
-//
-//    CGImageRef image = CGImageCreate(source.cols, source.rows, bitsPerComponent, bitsPerComponent * source.elemSize(), bytesPerRow, colorSpace, bitmapFlags, provider, NULL, false, kCGRenderingIntentDefault);
-//    UIImage *result = [UIImage imageWithCGImage:image];
-//
-//    CGImageRelease(image);
-//    CGDataProviderRelease(provider);
-//    CGColorSpaceRelease(colorSpace);
-    
-    
-    // Colorspace
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    
-    unsigned char* data = new unsigned char[4*source.cols*source.rows];
-    for (int y = 0; y < source.rows; ++y)
-    {
-        cv::Vec3b *ptr = source.ptr<cv::Vec3b>(y);
-        unsigned char *pdata = data + 4*y*source.cols;
-        
-        for (int x = 0; x < source.cols; ++x, ++ptr)
-        {
-            *pdata++ = (*ptr)[2];
-            *pdata++ = (*ptr)[1];
-            *pdata++ = (*ptr)[0];
-            *pdata++ = 0;
-        }
-    }
-    
-    // Bitmap context
-    CGContextRef context = CGBitmapContextCreate(data, source.cols, source.rows, 8, 4*source.cols, colorSpace, kCGImageAlphaNoneSkipLast);
-    
-    CGImageRef cgimage = CGBitmapContextCreateImage(context);
-    UIImage *result = [UIImage imageWithCGImage:cgimage];
-    
+    NSData *data = [NSData dataWithBytes:source.data length:source.elemSize() * source.total()];
+    CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
+
+    CGBitmapInfo bitmapFlags = kCGImageAlphaNone | kCGBitmapByteOrderDefault;
+    size_t bitsPerComponent = 8;
+    size_t bytesPerRow = source.step[0];
+    CGColorSpaceRef colorSpace = (source.elemSize() == 1 ? CGColorSpaceCreateDeviceGray() : CGColorSpaceCreateDeviceRGB());
+
+    CGImageRef image = CGImageCreate(source.cols, source.rows, bitsPerComponent, bitsPerComponent * source.elemSize(), bytesPerRow, colorSpace, bitmapFlags, provider, NULL, false, kCGRenderingIntentDefault);
+    UIImage *result = [UIImage imageWithCGImage:image];
+
+    CGImageRelease(image);
+    CGDataProviderRelease(provider);
     CGColorSpaceRelease(colorSpace);
-    CGContextRelease(context);
-    delete[] data;
     
     return result;
 }
