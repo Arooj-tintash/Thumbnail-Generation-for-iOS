@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TestOpenCV/ViewControllers/MainVC.swift"
-            timestampString = "578562695.569128"
+            timestampString = "578565258.476158"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "27"
@@ -26,28 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TestOpenCV/ViewControllers/OpenCVWrapper.mm"
-            timestampString = "578562695.5695831"
+            timestampString = "578565258.4762239"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "85"
             endingLineNumber = "85"
             landmarkName = "+processVideo:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "TestOpenCV/ViewControllers/OpenCVWrapper.mm"
-            timestampString = "578562695.569634"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "160"
-            endingLineNumber = "160"
-            landmarkName = "+_imageFrom:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
