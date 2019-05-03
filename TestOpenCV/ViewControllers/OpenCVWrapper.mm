@@ -61,16 +61,28 @@ using namespace std;
     std::string _filepath = std::string([filePath UTF8String]);
     
     video_parser *parser = new video_parser();
-    struct parser_params opt;
-    vector<Mat> videoFrame = parser->parse_video(_filepath, opt);
+//    struct parser_params opt;
+//    vector<ShotRange> v_shot_ranges = parser->parse_video(_filepath, opt);
+//    if( v_shot_ranges.empty() ) {
+//        fprintf(stderr, "run_hecate: Failed to parse the video\n");
+//    }
+//
+//    for(size_t i=0; i<v_shot_ranges.size(); i++) {
+//        printf("[%d:%d]", v_shot_ranges[i].start, v_shot_ranges[i].end);
+//        if( i<v_shot_ranges.size()-1 )
+//            printf(",");
+//    }
+    
+    
+    vector<Mat> videoFrame = parser->frameExtraction(_filepath);
 
     size_t sizeOfframes =videoFrame.size();
-    
-    Mat selectedFrame = videoFrame[sizeOfframes-1];
+    cout << '\n Size of frame' << sizeOfframes;
+    Mat selectedFrame = videoFrame[0];
     Mat rgbFrame;
     cv::cvtColor(selectedFrame, rgbFrame, CV_BGR2RGB);
     
-    return [OpenCVWrapper _imageFrom: rgbFrame];
+    return [OpenCVWrapper _imageFrom: selectedFrame];
 }
 
 #pragma mark Private
@@ -86,7 +98,7 @@ using namespace std;
 + (Mat)_gaussianBlur:(Mat)source {
     cout << "-> GaussianBlur ->";
     Mat result;
-//    cv::Size my_size = Size_<int>(11, 11);	
+    cv::Size my_size = Size_<int>(11, 11);
     
     //cv::blur(source, result, my_size);
     // Dilate
@@ -94,13 +106,12 @@ using namespace std;
     
     //cv::erode(source, result, Mat(), cv::Point(-1,-1));
     
-    cv::threshold(source, result, 30, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
+//    cv::threshold(source, result, 30, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
     //cvSmooth(pGrayImg, pGrayImg, CV_BLUR, 2, 2);
 
-   // cv::GaussianBlur(source, result, my_size, 5.0,5.0);
+    cv::GaussianBlur(source, result, my_size, 5.0,5.0);
     //applying Gaussian filter
-    
-    //result = source;
+
     return result;
 }
 

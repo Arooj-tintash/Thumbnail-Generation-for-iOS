@@ -13,7 +13,10 @@
 		9A78ABA1226DED7400E6C32C /* video_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A78AB9F226DED7400E6C32C /* video_parser.cpp */; };
 		9A893E132265EDC80064164E /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9A893E112265EDC80064164E /* OpenCVWrapper.mm */; };
 		9A893E152265EE3D0064164E /* fruits.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9A893E142265EE3D0064164E /* fruits.jpg */; };
+		9A8ADE71227AE12700F5CE7F /* thumbnail.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A8ADE70227AE12700F5CE7F /* thumbnail.cpp */; };
+		9A8ADE75227AEE1600F5CE7F /* thumbnail_generation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A8ADE74227AEE1600F5CE7F /* thumbnail_generation.cpp */; };
 		9AEEC6A02268BCAA004FF9ED /* testVideo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 9AEEC69F2268BCAA004FF9ED /* testVideo.mp4 */; };
+		9AFCC003227C1B66002D3F52 /* testVideo1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 9AFCC002227C1B66002D3F52 /* testVideo1.mp4 */; };
 		B4E6DA152255F7D4005844D4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E6DA142255F7D4005844D4 /* AppDelegate.swift */; };
 		B4E6DA1A2255F7D4005844D4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B4E6DA182255F7D4005844D4 /* Main.storyboard */; };
 		B4E6DA1C2255F7D6005844D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B4E6DA1B2255F7D6005844D4 /* Assets.xcassets */; };
@@ -40,7 +43,12 @@
 		9A893E112265EDC80064164E /* OpenCVWrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVWrapper.mm; sourceTree = "<group>"; };
 		9A893E122265EDC80064164E /* OpenCVWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenCVWrapper.h; sourceTree = "<group>"; };
 		9A893E142265EE3D0064164E /* fruits.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = fruits.jpg; sourceTree = "<group>"; };
+		9A8ADE70227AE12700F5CE7F /* thumbnail.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = thumbnail.cpp; sourceTree = "<group>"; };
+		9A8ADE72227AE15600F5CE7F /* thumbnail.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = thumbnail.h; sourceTree = "<group>"; };
+		9A8ADE73227AE3FF00F5CE7F /* time.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = time.h; sourceTree = "<group>"; };
+		9A8ADE74227AEE1600F5CE7F /* thumbnail_generation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = thumbnail_generation.cpp; sourceTree = "<group>"; };
 		9AEEC69F2268BCAA004FF9ED /* testVideo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = testVideo.mp4; sourceTree = "<group>"; };
+		9AFCC002227C1B66002D3F52 /* testVideo1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = testVideo1.mp4; sourceTree = "<group>"; };
 		B4E6DA112255F7D4005844D4 /* TestOpenCV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestOpenCV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4E6DA142255F7D4005844D4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B4E6DA192255F7D4005844D4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -92,6 +100,10 @@
 				9A1D674C22787D9400A0585D /* gflseg.cpp */,
 				9A1D674E227881A800A0585D /* shot_range.h */,
 				9A1D674F22788FF600A0585D /* gapstat.h */,
+				9A8ADE70227AE12700F5CE7F /* thumbnail.cpp */,
+				9A8ADE72227AE15600F5CE7F /* thumbnail.h */,
+				9A8ADE73227AE3FF00F5CE7F /* time.h */,
+				9A8ADE74227AEE1600F5CE7F /* thumbnail_generation.cpp */,
 			);
 			path = thumbnail_generator;
 			sourceTree = "<group>";
@@ -106,6 +118,7 @@
 		9AEEC69E2268BCAA004FF9ED /* Documents */ = {
 			isa = PBXGroup;
 			children = (
+				9AFCC002227C1B66002D3F52 /* testVideo1.mp4 */,
 				9AEEC69F2268BCAA004FF9ED /* testVideo.mp4 */,
 			);
 			path = Documents;
@@ -240,6 +253,7 @@
 				B4E6DA1A2255F7D4005844D4 /* Main.storyboard in Resources */,
 				9AEEC6A02268BCAA004FF9ED /* testVideo.mp4 in Resources */,
 				9A893E152265EE3D0064164E /* fruits.jpg in Resources */,
+				9AFCC003227C1B66002D3F52 /* testVideo1.mp4 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -273,10 +287,12 @@
 			files = (
 				9A78ABA1226DED7400E6C32C /* video_parser.cpp in Sources */,
 				9A1D674D22787D9500A0585D /* gflseg.cpp in Sources */,
+				9A8ADE71227AE12700F5CE7F /* thumbnail.cpp in Sources */,
 				9A893E132265EDC80064164E /* OpenCVWrapper.mm in Sources */,
 				B4E6DA272255F972005844D4 /* ImageViewVC.swift in Sources */,
 				B4E6DA292255FE6A005844D4 /* MainVC.swift in Sources */,
 				9A2C29682265FBE300B540A4 /* VideoViewVC.swift in Sources */,
+				9A8ADE75227AEE1600F5CE7F /* thumbnail_generation.cpp in Sources */,
 				B4E6DA152255F7D4005844D4 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -35,6 +35,7 @@ void Segmenter::gflseg(const Mat& X, vector<int>& jumps, int k, double theta)
     //jumps[jmp2[kbest].size()] = X.rows-1; // last index
 };
 
+
 void Segmenter::dpseg(const Mat& X, const vector<int>& cp, vector<vector<int> >& jumps,
                       Mat& rse, int& kbest, double theta, int kmax )
 {
@@ -313,7 +314,8 @@ void Segmenter::gflars(const Mat& X, vector<int>& jumps,
                 gammaTemp.at<double>(subset[i]) = gammaTemp.at<double>(subset[i]+n-1) = tmp2.at<double>(i);
             
             subset.clear();
-            }
+        }
+        
         
         //
         // Finally the active set should not be taken into account, as well as

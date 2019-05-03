@@ -45,6 +45,7 @@ inline void calc_color_hist( const Mat& img, Mat& hist, int nbins=128 )
     Mat hist1( hist, cv::Rect(0,1*nbins,1,nbins) );
     Mat hist2( hist, cv::Rect(0,2*nbins,1,nbins) );
     
+    
     calcHist( &planes[0], 1, 0, Mat(), hist0, 1, &nbins, &_range_clr, true, false);
     calcHist( &planes[1], 1, 0, Mat(), hist1, 1, &nbins, &_range_clr, true, false);
     calcHist( &planes[2], 1, 0, Mat(), hist2, 1, &nbins, &_range_clr, true, false);
@@ -159,7 +160,7 @@ inline void calc_pyr_color_hist( const Mat& img, Mat& hist, int nbins=128, int l
             for(int y=0; y<pow(2,l); y++) {
                 int p_width  = floor( w/pow(2,l) );
                 int p_height = floor( h/pow(2,l) );
-                int p_x = x*p_width;
+                int p_x = x*p_width;    
                 int p_y = y*p_height;
                 Mat patch_img( img, cv::Rect(p_x,p_y,p_width,p_height) );
                 Mat patch_hist( hist, cv::Rect(0,patch*hist_sz,1,hist_sz) );

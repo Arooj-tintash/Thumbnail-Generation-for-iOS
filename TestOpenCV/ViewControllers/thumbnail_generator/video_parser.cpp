@@ -8,62 +8,131 @@
 
 #include <stdio.h>
 #include "video_parser.h"
+#include "thumbnail.h"
 
 using namespace std;
 using namespace cv;
 
+
 /*-----------------------------------------------------------------------*/
-vector<Mat> video_parser::parse_video(const string& filepath, parser_params opt)
+void video_parser::release_memory()
 /*-----------------------------------------------------------------------*/
 {
+    _v_frm_rgb.clear();
+    _v_frm_gray.clear();
+}
+
+vector<Mat> video_parser::frameExtraction(const string &in_video)
+{
+    cout << " Frame Extraction from videos ->";
+//    cv::VideoCapture vidCap = cv::VideoCapture(in_video);
+//    if(!vidCap.isOpened()) cout << "Could not open testVideo.mp4";
+//
+//            vector<Mat> _v_frm_rgb;
+//
+//            //Seek video to last frame
+//            bool isFrame = true;
+//            while (isFrame) {
+//                cv::Mat frame;
+//                isFrame = vidCap.read(frame);
+//
+//                if(isFrame){
+//                    _v_frm_rgb.push_back(frame); //get a new frame
+//                }
+//            }
+//    cout << "\n No of frames: " << _v_frm_rgb.size();
+//
+//    for( int i=0; i<_v_frm_rgb.size(); i++ )
+//            {
+//                Mat frm_gray;
+//                cvtColor( _v_frm_rgb[i], frm_gray, CV_BGR2GRAY );
+//            }
+
+    vector<Mat> generated_frames;
+
+    thumbnail_params thum_opt;
+    vector<int> v_thumb_idx;
+
+    generated_frames = run_thumbnail(in_video, thum_opt, v_thumb_idx);
+    return generated_frames;
+}
+
+/*-----------------------------------------------------------------------*/
+vector<ShotRange> video_parser::parse_video(const string& filepath, parser_params opt)
+/*-----------------------------------------------------------------------*/
+{
+    cout << "\n Parse Video ->";
     _debug = opt.debug;
-    vector<Mat> gray_frm = read_video(filepath, opt.step_sz, opt.max_duration,
+    int ret = read_video(filepath, opt.step_sz, opt.max_duration,
                                       opt.ignore_rest);
     
-    // Record metadata
-    //    struct video_metadata meta;
-    //
-    //    meta.nframes  = _nfrm_total;
-    //    meta.width    = _video_width;
-    //    meta.height   = _video_height;
-    //    meta.fps      = _video_fps;
-    //    meta.duration = _video_sec;
+    if( ret<0 ) {
+        fprintf( stderr, "VideoParser: Failed to open input video: %s\n",
+                filepath.c_str());
+        return vector<ShotRange>();
+    }
     
-    vector<Mat> sharpness_frm;
+    // Record metadata
+//        struct video_metadata meta;
+    
+        meta.nframes  = _nfrm_total;
+        meta.width    = _video_width;
+        meta.height   = _video_height;
+        meta.fps      = _video_fps;
+        meta.duration = _video_sec;
+    
+    vector<Mat> brightness;
     vector<Mat> transition_frm;
     
-    sharpness_frm = filter_low_quality(sharpness_frm);
-    transition_frm = filter_transition();
+    if( opt.fltr_lq )
+        filter_low_quality();
     
+    filter_transition();
+    
+    // Extract feature representation
+    extract_histo_features();
+
     // Post-process (break up shots if too long)
-//    double min_shot_len_sec = 2.0;
-//    post_process(min_shot_len_sec, opt.gfl);
-//
-//
-//    // Store shot information
-//    update_shot_ranges();
+    double min_shot_len_sec = 2.0;
+    post_process(min_shot_len_sec, opt.gfl);
+
+    release_memory();
+    // Store shot information
+    update_shot_ranges();
+
+    // Subshot detection; subshot info is stored during this step
+    if( opt.fltr_rdt )
+        filter_redundant_and_obtain_subshots();
+
+//    if( _display )
+//        play_video_filtered(filepath, 2, 360 );
     
-//    // Subshot detection; subshot info is stored during this step
-//    if( opt.fltr_rdt )
-//        filter_redundant_and_obtain_subshots();
-    
-    return sharpness_frm;
+    return _v_shot_ranges;
 }
+
 /*------------------------------------------------------------------------
  Read input video and store as RGB and GRAY formats.
  ------------------------------------------------------------------------*/
 
-vector<Mat> video_parser::read_video(const string& _filepath, int step_sz,
+int video_parser::read_video(const string& _filepath, int step_sz,
                                      double max_duration, bool ignore_rest,
-                                     int max_frm_len) {
+                                     int max_frm_len)
+{
+    cout << " Read Video ->";
+    if( _debug )
+        printf("VideoParser: read_video(\"%s\", \n\tstep_sz=%d, "
+               "max_duration=%.2f, max_frm_len=%d, ignore_rest=%d)\n",
+               _filepath.c_str(), step_sz, max_duration, max_frm_len, ignore_rest);
     
-    cout << "-> Read Video ->";
-    //    std::string _filepath = std::string([filepath UTF8String]);
+    VideoCapture vr(_filepath);
+    if( !vr.isOpened() ) {
+        return -1;
+    }
     
-    cv::VideoCapture vidCap = cv::VideoCapture(_filepath);
-    if(!vidCap.isOpened()) cout << "Could not open testVideo.mp4";
-    
-    _video_fps    = max(1.0, vidCap.get(CV_CAP_PROP_FPS));
+    _nfrm_total   = vr.get(CV_CAP_PROP_FRAME_COUNT);
+    _video_width  = vr.get(CV_CAP_PROP_FRAME_WIDTH);
+    _video_height = vr.get(CV_CAP_PROP_FRAME_HEIGHT);
+    _video_fps    = max(1.0, vr.get(CV_CAP_PROP_FPS));
     if( _video_fps!=_video_fps )
         _video_fps = 29.97;
     
@@ -71,22 +140,19 @@ vector<Mat> video_parser::read_video(const string& _filepath, int step_sz,
     ? _nfrm_total : round(max_duration*_video_fps);
     
     // need to store _step_sz for computing min_shot_len in sbg_gflseg()
-    int _step_sz = step_sz;
+    _step_sz = step_sz;
     if( step_sz>10 ) {
         _step_sz = 10;
         fprintf( stderr, "VideoParser: The maximum step size is 10"
                 " (provided is %d)\n", step_sz );
     }
-    
     // if video is too long, and ignore_rest is false, adjust step size
     if( !ignore_rest && max_nfrms > 0 && _nfrm_total > max_nfrms ) {
         _step_sz = ceil( _nfrm_total/max_nfrms );
         fprintf( stderr, "VideoParser: Video too long (%d frames),"
                 "increasing step size to %d\n", _nfrm_total, step_sz );
     }
-    
     _step_sz = max(1, _step_sz);
-    step_sz = _step_sz;
     
     int maxlen = max( _video_width, _video_height );
     double rsz_ratio = (maxlen>max_frm_len)
@@ -97,7 +163,7 @@ vector<Mat> video_parser::read_video(const string& _filepath, int step_sz,
     while( true )
     {
         Mat frm;
-        vidCap >> frm;
+        vr >> frm;
         if( frm.empty() ) break;
         
         if( _nfrm_total % _step_sz == 0 ) {
@@ -115,7 +181,7 @@ vector<Mat> video_parser::read_video(const string& _filepath, int step_sz,
         }
         _nfrm_total++;
     }
-    vidCap.release();
+    vr.release();
     
     _nfrm_given = (int) _v_frm_rgb.size();
     _video_sec  = (double)_nfrm_total/_video_fps;
@@ -135,26 +201,24 @@ vector<Mat> video_parser::read_video(const string& _filepath, int step_sz,
     _v_frm_valid.assign( _nfrm_given, true );
     _v_frm_log.assign( _nfrm_given, " " );
     
-    cout << "No of frames: " << _v_frm_rgb.size() << " " << _nfrm_total;
-    
     _X_diff = Mat( _nfrm_given, 1, CV_64F, Scalar(0,0,0)[0] );
     _X_ecr  = Mat( _nfrm_given, 1, CV_64F, Scalar(0,0,0)[0] );
     
-    return  _v_frm_gray;
+    return 0;
 }
 
 /*------------------------------------------------------------------------
  Use a collection of heuristics to filter out low-quality frames.
  ------------------------------------------------------------------------*/
-vector<Mat> video_parser::filter_low_quality( vector<Mat> frames, double thrsh_bright,
+void video_parser::filter_low_quality(double thrsh_bright,
                                              double thrsh_sharp,
                                              double thrsh_uniform)
 /*-----------------------------------------------------------------------*/
 {
-    cout << "-> Filter low quality frame ->";
+    cout << "\n Filter low quality frame ->";
     
     // filter at most n percent of the total frames
-    cout << "Value of n frm given in low quality frame: " << _nfrm_given << " " << frames.size();
+    cout << "Value of n frm given in low quality frame: " << _nfrm_given;
     int nfrm_nperc = (int)(0.15*_nfrm_given);
     
     vector<double> v_brightness(_nfrm_given,0.0);
@@ -180,57 +244,49 @@ vector<Mat> video_parser::filter_low_quality( vector<Mat> frames, double thrsh_b
     my_sort( v_brightness, v_srt_val, v_srt_idx );
     
     for( int i=0; i<nfrm_nperc; i++ ) {
-        if( v_srt_val[i] <= thrsh_bright )
+//        printf("Brightness : %f", v_srt_val[i]);
+        if( v_srt_val[i] <= thrsh_bright ) {
+//            cout << "\n Sorted index for darkness" << v_srt_val[i];
             mark_invalid(_v_frm_valid, _v_frm_log, v_srt_idx[i], "[Dark]");
-        
-        if( v_srt_val[i] >= thrsh_bright ) {
-            //            cout << " \n Sorted Values for brightness " << v_srt_val[i];
-            brightnessVector.push_back(_v_frm_rgb[v_srt_idx[i]]);
         }
     }
     
     // BLURRY frame detection
     my_sort( v_sharpness, v_srt_val, v_srt_idx );
     
-    for( int i=0; i<nfrm_nperc; i++ )
+    for( int i=0; i<nfrm_nperc; i++ ) {
+//        printf("Sharpness : %f", v_srt_val[i]);
         if( v_srt_val[i] <= thrsh_sharp ) {
-//            cout << "Sorted index " << v_srt_val[i];
+//            cout << "\n Sorted index for sharpness" << v_srt_val[i];
             mark_invalid(_v_frm_valid, _v_frm_log, v_srt_idx[i], "[Blurry]");
-//
-            if( v_srt_val[i] >= thrsh_sharp ) {
-                //            cout << " \n Sorted Values of sharpness " << v_srt_val[i];
-                sharpnessVector.push_back(_v_frm_gray[v_srt_idx[i]]);
-            }
-            
         }
+    }
     // UNIFORM frame detection
     my_sort( v_uniformity, v_srt_val, v_srt_idx );
     
-    for( int i=0; i<nfrm_nperc; i++ )
+    for( int i=0; i<nfrm_nperc; i++ ) {
+//        printf("Uniformity : %f", v_srt_val[i]);
         if( v_srt_val[_nfrm_given-i-1] >= thrsh_uniform ) {
             
-            cout << " \n Sorted Values for uniformity " << v_srt_val[i];
-            uniformityVector.push_back(_v_frm_gray[v_srt_idx[i]]);
+//            cout << " \n Sorted Values for uniformity " << v_srt_val[i];
             
             mark_invalid(_v_frm_valid, _v_frm_log, v_srt_idx[_nfrm_given-i-1], "[Uniform]");
         }
-    return brightnessVector;
+    }
 }
 
 /*------------------------------------------------------------------------
  Frames around shot boundaries are usually low-quality, filter them out
  Use two SBD methods: frame-by-frame difference and ECR
  ------------------------------------------------------------------------*/
-vector<Mat> video_parser::filter_transition( double thrsh_diff, double thrsh_ecr )
+void video_parser::filter_transition( double thrsh_diff, double thrsh_ecr )
 /*-----------------------------------------------------------------------*/
 {
-    cout << "-> Filter Transition ->";
+    cout << "\n Filter Transition ->";
     int nfrm_nperc = (int)(0.10*_nfrm_given); // n percent of the total frames
     
     vector<double> v_diff(_nfrm_given, 0.0);
     vector<double> v_ecr(_nfrm_given, 0.0);
-    
-    vector<Mat> ecr_frame;
     
     // sort wrt cluster size in an ascending order
     vector<size_t> v_srt_idx; // contains sorted indices
@@ -281,18 +337,20 @@ vector<Mat> video_parser::filter_transition( double thrsh_diff, double thrsh_ecr
     
     // CUT detection
     my_sort( v_diff, v_srt_val, v_srt_idx );
-    for( int i=0; i<nfrm_nperc; i++ )
+    for( int i=0; i<nfrm_nperc; i++ ) {
         if( v_srt_val[_nfrm_given-i-1] >= thrsh_diff ) {
-            cout << "\n Cut transition value " << v_srt_idx[i];
+//            cout << "\n Cut transition value " << v_srt_idx[i];
             mark_invalid(_v_frm_valid, _v_frm_log, v_srt_idx[_nfrm_given-i-1], "[Cut]" );
         }
+    }
     // TRANSITION detection (cut, fade, dissolve, wipe)
     my_sort( v_ecr, v_srt_val, v_srt_idx );
-    for( int i=0; i<nfrm_nperc; i++ )
-        if( v_srt_val[_nfrm_given-i-1] >= thrsh_ecr )
+    for( int i=0; i<nfrm_nperc; i++ ) {
+        if( v_srt_val[_nfrm_given-i-1] >= thrsh_ecr ) {
+//            cout << "\n ECR transition value " << v_srt_idx[i];
             mark_invalid(_v_frm_valid, _v_frm_log, v_srt_idx[_nfrm_given-i-1], "[ECR]" );
-    
-    return ecr_frame;
+        }
+    }
 }
 
 /*------------------------------------------------------------------------
@@ -303,7 +361,7 @@ vector<Mat> video_parser::filter_transition( double thrsh_diff, double thrsh_ecr
 void video_parser::post_process(double min_shot_sec, bool gfl)
 /*-----------------------------------------------------------------------*/
 {
-    cout << "-> Post Process ->";
+    cout << "->\n Post Process ->";
     Segmenter seg;
     int start_idx=-1, end_idx=-1, shotlen=-1;
     int min_shot_len = min_shot_sec * _video_fps / _step_sz;
@@ -399,7 +457,7 @@ void video_parser::extract_histo_features(int pyr_level, bool omit_filtered,
                                           int nbin_edge_mag)
 /*-----------------------------------------------------------------------*/
 {
-    cout << "-> Extract Histo Features ->";
+    cout << "\n Extract Histo Features ->";
     
     int npatches = 0;
     for(int l=0; l<pyr_level; l++)
@@ -430,44 +488,11 @@ void video_parser::extract_histo_features(int pyr_level, bool omit_filtered,
     hconcat( X_color_hist, X_edge_hist, _X_feat );
 }
 
-
-/*-----------------------------------------------------------------------*/
-void video_parser::update_shot_ranges( int min_shot_len )
-/*-----------------------------------------------------------------------*/
-{
-    cout << "Update Shot Ranges";
-    _v_shot_ranges.clear();
-    
-    int sb0=0, sb1=-1;
-    for( int i=0; i<_nfrm_given; i++ )
-    {
-        if( _v_frm_valid[i] ) {
-            // enter a new shot area
-            if( sb0<0 ) sb0 = i;
-            sb1 = i;
-        }
-        
-        // exit the current shot area
-        if( sb0>=0 && sb1>=0 && (!_v_frm_valid[i] || i+1==_nfrm_given) )
-        {
-            ShotRange r( sb0, sb1 );
-            if( r.length()>min_shot_len ) {
-                _v_shot_ranges.push_back( r );
-            }
-            else {
-                for(int j=sb0; j<=sb1; j++ )
-                    mark_invalid( _v_frm_valid, _v_frm_log, j, "[Short]" );
-            }
-            sb0 = sb1 = -1;
-        }
-    }
-}
-
 /*-----------------------------------------------------------------------*/
 void video_parser::filter_redundant_and_obtain_subshots()
 /*-----------------------------------------------------------------------*/
 {
-    cout << "Filter redundant Obtain Subshots";
+    cout << " -> Filter redundant Obtain Subshots ->";
     
     if( _v_shot_ranges.empty() )
         update_shot_ranges();
@@ -559,6 +584,49 @@ void video_parser::filter_redundant_and_obtain_subshots()
 }
 
 /*-----------------------------------------------------------------------*/
+void video_parser::update_shot_ranges( int min_shot_len )
+/*-----------------------------------------------------------------------*/
+{
+    cout << " -> Update Shot Ranges ->";
+    
+    _v_shot_ranges.clear();
+    
+    int sb0=0, sb1=-1;
+    for( int i=0; i<_nfrm_given; i++ )
+    {
+        if( _v_frm_valid[i] ) {
+            // enter a new shot area
+            if( sb0<0 ) sb0 = i;
+            sb1 = i;
+        }
+        
+        // exit the current shot area
+        if( sb0>=0 && sb1>=0 && (!_v_frm_valid[i] || i+1==_nfrm_given) )
+        {
+            ShotRange r( sb0, sb1 );
+            if( r.length()>min_shot_len ) {
+                _v_shot_ranges.push_back( r );
+            }
+            else {
+                for(int j=sb0; j<=sb1; j++ )
+                    mark_invalid( _v_frm_valid, _v_frm_log, j, "[Short]" );
+            }
+            sb0 = sb1 = -1;
+        }
+    }
+    
+    if( _v_shot_ranges.empty() ) {
+        fprintf(stderr, "run_hecate: Failed to parse the video\n");
+    } else {
+        for(size_t i=0; i<_v_shot_ranges.size(); i++) {
+            printf("[%d:%d]", _v_shot_ranges[i].start, _v_shot_ranges[i].end);
+        }
+        cout << "Shot ranges work";
+    }
+    
+}
+
+/*-----------------------------------------------------------------------*/
 int video_parser::get_nfrm_valid()
 /*-----------------------------------------------------------------------*/
 {
@@ -585,3 +653,56 @@ void video_parser::mark_invalid( vector<bool>& vec, int idx, int wnd_sz )
         vec[i] = false;
     }
 }
+
+/*-----------------------------------------------------------------------*/
+void video_parser::play_video_filtered( const string& in_video,
+                                      int step_sz, int max_frm_len )
+/*-----------------------------------------------------------------------*/
+{
+    printf("\nDebug mode: Displaying shot segmentation results...\n");
+    
+    // Debug visualization
+    const char* WND = "DEBUG";
+    namedWindow( WND ,1 );
+    
+    Mat frm;
+    double debug_rsz_ratio = (double)max_frm_len/_video_width;
+    
+    VideoCapture vr( in_video );
+    vr >> frm;
+    resize( frm, frm, Size(), debug_rsz_ratio, debug_rsz_ratio, CV_INTER_LINEAR );
+    vr.set( CV_CAP_PROP_POS_FRAMES, 0 );
+    
+    Size sz = frm.size();
+    Mat frm_lr( sz.height, 2*sz.width, CV_8UC3 );
+    Mat frm_l(frm_lr, Rect(0,0,sz.width,sz.height));
+    Mat frm_r(frm_lr, Rect(sz.width,0,sz.width,sz.height));
+    frm_lr.setTo(Scalar(0));
+    
+    for( int i=0; i<_nfrm_given; i++)
+    {
+        for( int j=0; j<step_sz; j++ ) {
+            vr >> frm;
+            if( frm.empty() ) break;
+        }
+        if( frm.empty() ) break;
+        resize( frm, frm, Size(), debug_rsz_ratio, debug_rsz_ratio, CV_INTER_LINEAR );
+        
+        std::stringstream s;
+        s << _v_frm_log[i];
+        putText(frm, s.str(), Point2f(5,30), FONT_HERSHEY_PLAIN, 1.3, Scalar(255,0,255,255), 2);
+        
+        if( _v_frm_log[i].length()<2 ) {
+            frm.copyTo( frm_l );
+        }
+        else {
+            frm.copyTo( frm_r );
+        }
+        
+        imshow( WND, frm_lr );
+        if( waitKey(_video_fps)>=0 ) break;
+    }
+    vr.release();
+    destroyWindow( WND );
+}
+
