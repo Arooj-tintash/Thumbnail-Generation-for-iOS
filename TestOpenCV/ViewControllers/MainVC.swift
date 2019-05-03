@@ -59,9 +59,10 @@ extension MainVC {
         var processImageFromOpenCV : UIImage? = nil;
         guard let urlString = videoArray.first else { return nil }
         let url = URL(fileURLWithPath: urlString)
-        let absURL = url.absoluteString as NSString
+        let absURL = (url.absoluteString as NSString) as String
+        let _absURL = absURL.replacingOccurrences(of: "file://", with: "")
         
-        processImageFromOpenCV = OpenCVWrapper.processVideo(absURL as String);
+        processImageFromOpenCV = OpenCVWrapper.processVideo(_absURL);
         
         return processImageFromOpenCV
     }

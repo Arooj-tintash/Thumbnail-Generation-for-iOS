@@ -57,8 +57,7 @@ using namespace std;
 
 + (UIImage *)processVideo:(NSString *)filepathParam {
     cout << "OpenCV Filters";
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"testVideo" ofType:@"mp4"];
-    std::string _filepath = std::string([filePath UTF8String]);
+    std::string _filepath = std::string([filepathParam UTF8String]);
     
     video_parser *parser = new video_parser();
     vector<Mat> videoFrame = parser->frameExtraction(_filepath);
