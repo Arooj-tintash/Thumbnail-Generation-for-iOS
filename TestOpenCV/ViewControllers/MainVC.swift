@@ -54,9 +54,9 @@ extension MainVC {
         return processImage
     }
     
-    func getVideoDataFromBundle() -> UIImage? {
+    func getVideoDataFromBundle() -> NSMutableArray? {
         let videoArray = Bundle.main.paths(forResourcesOfType: "mp4", inDirectory: nil)
-        var processImageFromOpenCV : UIImage? = nil;
+        var processImageFromOpenCV : NSMutableArray? = nil;
         guard let urlString = videoArray.first else { return nil }
         let url = URL(fileURLWithPath: urlString)
         let absURL = (url.absoluteString as NSString) as String

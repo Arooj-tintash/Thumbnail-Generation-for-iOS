@@ -16,7 +16,7 @@
 @interface OpenCVWrapper : NSObject
 
 + (UIImage *)processImage:(UIImage *) source;
-+ (UIImage *)processVideo:(NSString *) videoURLString;
++ (NSMutableArray *)processVideo:(NSString *) videoURLString;
 
 @end
 

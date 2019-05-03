@@ -37,9 +37,9 @@ using namespace std;
 + (Mat) _gaussianBlur:(Mat)source;
 
 + (Mat)_matFrom:(UIImage *)source;
-+ (UIImage *)_imageFrom:(Mat)source;
++ (NSMutableArray *)_imageFrom:(vector<Mat>)source;
 
-+(UIImage *) processVideo:(NSString *)filepath;
+//+ (NSMutableArray *) processVideo:(NSString *)filepath;
 
 #endif
 
@@ -50,12 +50,12 @@ using namespace std;
 @implementation OpenCVWrapper
 
 #pragma mark Public
-+ (UIImage *)processImage:(UIImage *)source {
-    cout << "OpenCV Filters";
-    return [OpenCVWrapper _imageFrom:[OpenCVWrapper _processImage:[OpenCVWrapper _matFrom:source]]];
-}
+//+ (UIImage *)processImage:(UIImage *)source {
+//    cout << "OpenCV Filters";
+//    return [OpenCVWrapper _imageFrom:[OpenCVWrapper _processImage:[OpenCVWrapper _matFrom:source]]];
+//}
 
-+ (UIImage *)processVideo:(NSString *)filepathParam {
++ (NSMutableArray *)processVideo:(NSString *)filepathParam {
     cout << "OpenCV Filters";
     std::string _filepath = std::string([filepathParam UTF8String]);
     
@@ -63,12 +63,18 @@ using namespace std;
     vector<Mat> videoFrame = parser->frameExtraction(_filepath);
 
     size_t sizeOfframes =videoFrame.size();
-    cout << '\n Size of frame' << sizeOfframes;
-    Mat selectedFrame = videoFrame[sizeOfframes-1];
-    Mat rgbFrame;
-    cv::cvtColor(selectedFrame, rgbFrame, CV_BGR2RGB);
+    cout << "\n Size of frame " << sizeOfframes;
+    vector<Mat> selectedFrame; //= videoFrame[sizeOfframes-1];
     
-    return [OpenCVWrapper _imageFrom: rgbFrame];
+    selectedFrame.assign( videoFrame.size(), Mat() );
+    
+    for(int i=0; i < sizeOfframes-1; i++) {
+        Mat rgbFrame;
+        cv::cvtColor(videoFrame[i], rgbFrame, CV_BGR2RGB);
+        rgbFrame.copyTo(selectedFrame[i]);
+    }
+    
+    return [OpenCVWrapper _imageFrom: selectedFrame];
 }
 
 #pragma mark Private
@@ -132,23 +138,61 @@ using namespace std;
     return result;
 }
 
-+ (UIImage *)_imageFrom:(Mat)source {
++ (NSMutableArray *)_imageFrom:(vector<Mat>)source {
     cout << "-> imageFrom\n";
     
-    NSData *data = [NSData dataWithBytes:source.data length:source.elemSize() * source.total()];
-    CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
+    NSMutableArray *result = [[NSMutableArray alloc] init];
 
-    CGBitmapInfo bitmapFlags = kCGImageAlphaNone | kCGBitmapByteOrderDefault;
-    size_t bitsPerComponent = 8;
-    size_t bytesPerRow = source.step[0];
-    CGColorSpaceRef colorSpace = (source.elemSize() == 1 ? CGColorSpaceCreateDeviceGray() : CGColorSpaceCreateDeviceRGB());
+    for(int i=0; i< source.size()-1; i++) {
+        NSData *data = [NSData dataWithBytes:source[i].data length:source[i].elemSize() * source[i].total()];
+        CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
 
-    CGImageRef image = CGImageCreate(source.cols, source.rows, bitsPerComponent, bitsPerComponent * source.elemSize(), bytesPerRow, colorSpace, bitmapFlags, provider, NULL, false, kCGRenderingIntentDefault);
-    UIImage *result = [UIImage imageWithCGImage:image];
+        CGBitmapInfo bitmapFlags = kCGImageAlphaNone | kCGBitmapByteOrderDefault;
+        size_t bitsPerComponent = 8;
+        size_t bytesPerRow = source[i].step[0];
+        CGColorSpaceRef colorSpace = (source[i].elemSize() == 1 ? CGColorSpaceCreateDeviceGray() : CGColorSpaceCreateDeviceRGB());
 
-    CGImageRelease(image);
-    CGDataProviderRelease(provider);
-    CGColorSpaceRelease(colorSpace);
+        CGImageRef image = CGImageCreate(source[i].cols, source[i].rows, bitsPerComponent, bitsPerComponent * source[i].elemSize(), bytesPerRow, colorSpace, bitmapFlags, provider, NULL, false, kCGRenderingIntentDefault);
+        UIImage * resultImg  = [UIImage imageWithCGImage:image];
+        [result addObject:resultImg];
+
+        CGImageRelease(image);
+        CGDataProviderRelease(provider);
+        CGColorSpaceRelease(colorSpace);
+    }
+
+//    // Colorspace
+//    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+//
+//    for(int i=0; i < source.size()-1; i++) {
+//    unsigned char* data = new unsigned char[4*source[i].cols*source[i].rows];
+//    for (int y = 0; y < source[i].rows; ++y)
+//    {
+//        cv::Vec3b *ptr = source[i].ptr<cv::Vec3b>(y);
+//        unsigned char *pdata = data + 4*y*source[i].cols;
+//
+//        for (int x = 0; x < source[i].cols; ++x, ++ptr)
+//        {
+//            *pdata++ = (*ptr)[2];
+//            *pdata++ = (*ptr)[1];
+//            *pdata++ = (*ptr)[0];
+//            *pdata++ = 0;
+//        }
+//    }
+//
+//    // Bitmap context
+//    CGContextRef context = CGBitmapContextCreate(data, source[i].cols, source[i].rows, 8, 4*source[i].cols, colorSpace, kCGImageAlphaNoneSkipLast);
+//
+//    CGImageRef cgimage = CGBitmapContextCreateImage(context);
+//    UIImage *resultImg = [UIImage imageWithCGImage:cgimage];
+//    [result addObject:resultImg];
+//
+//    CGColorSpaceRelease(colorSpace);
+//    CGContextRelease(context);
+//    delete[] data;
+//
+//    }
+    
     
     return result;
 }
