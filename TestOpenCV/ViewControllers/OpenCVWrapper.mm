@@ -1,4 +1,3 @@
-//
 //  OpenCVWrapper.m
 //  TestOpenCV
 //
@@ -61,22 +60,35 @@ using namespace std;
     
     video_parser *parser = new video_parser();
     vector<Mat> videoFrame = parser->frameExtraction(_filepath);
-
+    
     size_t sizeOfframes =videoFrame.size();
     cout << "\n Size of frame " << sizeOfframes;
+<<<<<<< Updated upstream
 //    Mat selectedFrame = videoFrame[0];
     
     vector<Mat> selectedFrame;
     selectedFrame.assign( videoFrame.size(), Mat() );
 
+=======
+    //    Mat selectedFrame = videoFrame[0];
+    
+    vector<Mat> selectedFrame;
+    selectedFrame.assign( videoFrame.size(), Mat() );
+    
+>>>>>>> Stashed changes
     for(int i=0; i < sizeOfframes; i++) {
         Mat rgbFrame;
         cv::cvtColor(videoFrame[i], rgbFrame, CV_BGR2RGB);
         rgbFrame.copyTo(selectedFrame[i]);
     }
     
+<<<<<<< Updated upstream
 //    Mat rgbFrame;
 //    cv::cvtColor(selectedFrame, rgbFrame, CV_BGR2RGB);
+=======
+    //    Mat rgbFrame;
+    //    cv::cvtColor(selectedFrame, rgbFrame, CV_BGR2RGB);
+>>>>>>> Stashed changes
     
     return [OpenCVWrapper _imageFrom: selectedFrame];
 }
@@ -102,12 +114,12 @@ using namespace std;
     
     //cv::erode(source, result, Mat(), cv::Point(-1,-1));
     
-//    cv::threshold(source, result, 30, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
+    //    cv::threshold(source, result, 30, 255, CV_THRESH_BINARY | CV_THRESH_OTSU);
     //cvSmooth(pGrayImg, pGrayImg, CV_BLUR, 2, 2);
-
+    
     cv::GaussianBlur(source, result, my_size, 5.0,5.0);
     //applying Gaussian filter
-
+    
     return result;
 }
 
@@ -146,17 +158,22 @@ using namespace std;
     cout << "-> imageFrom\n";
     
     UIImage * result;
+<<<<<<< Updated upstream
 //    vector<NSMutableArray> *result = [[NSMutableArray alloc] init];
 //
+=======
+    //    vector<NSMutableArray> *result = [[NSMutableArray alloc] init];
+    //
+>>>>>>> Stashed changes
     for(size_t i=0; i < source.size(); i++) {
         NSData *data = [NSData dataWithBytes:source[i].data length:source[i].elemSize() * source[i].total()];
         CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
-
+        
         CGBitmapInfo bitmapFlags = kCGImageAlphaNone | kCGBitmapByteOrderDefault;
         size_t bitsPerComponent = 8;
         size_t bytesPerRow = source[i].step[0];
         CGColorSpaceRef colorSpace = (source[i].elemSize() == 1 ? CGColorSpaceCreateDeviceGray() : CGColorSpaceCreateDeviceRGB());
-
+        
         CGImageRef image = CGImageCreate(source[i].cols, source[i].rows, bitsPerComponent, bitsPerComponent * source[i].elemSize(), bytesPerRow, colorSpace, bitmapFlags, provider, NULL, false, kCGRenderingIntentDefault);
         
         result  = [UIImage imageWithCGImage:image];
@@ -167,7 +184,11 @@ using namespace std;
         CGDataProviderRelease(provider);
         CGColorSpaceRelease(colorSpace);
     }
+<<<<<<< Updated upstream
    return result;
+=======
+    return result;
+>>>>>>> Stashed changes
 }
 
 @end
