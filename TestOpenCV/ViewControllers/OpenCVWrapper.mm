@@ -1,3 +1,5 @@
+
+//
 //  OpenCVWrapper.m
 //  TestOpenCV
 //
@@ -63,32 +65,19 @@ using namespace std;
     
     size_t sizeOfframes =videoFrame.size();
     cout << "\n Size of frame " << sizeOfframes;
-<<<<<<< Updated upstream
-//    Mat selectedFrame = videoFrame[0];
-    
-    vector<Mat> selectedFrame;
-    selectedFrame.assign( videoFrame.size(), Mat() );
-
-=======
     //    Mat selectedFrame = videoFrame[0];
     
     vector<Mat> selectedFrame;
     selectedFrame.assign( videoFrame.size(), Mat() );
     
->>>>>>> Stashed changes
     for(int i=0; i < sizeOfframes; i++) {
         Mat rgbFrame;
         cv::cvtColor(videoFrame[i], rgbFrame, CV_BGR2RGB);
         rgbFrame.copyTo(selectedFrame[i]);
     }
     
-<<<<<<< Updated upstream
-//    Mat rgbFrame;
-//    cv::cvtColor(selectedFrame, rgbFrame, CV_BGR2RGB);
-=======
     //    Mat rgbFrame;
     //    cv::cvtColor(selectedFrame, rgbFrame, CV_BGR2RGB);
->>>>>>> Stashed changes
     
     return [OpenCVWrapper _imageFrom: selectedFrame];
 }
@@ -158,13 +147,8 @@ using namespace std;
     cout << "-> imageFrom\n";
     
     UIImage * result;
-<<<<<<< Updated upstream
-//    vector<NSMutableArray> *result = [[NSMutableArray alloc] init];
-//
-=======
     //    vector<NSMutableArray> *result = [[NSMutableArray alloc] init];
     //
->>>>>>> Stashed changes
     for(size_t i=0; i < source.size(); i++) {
         NSData *data = [NSData dataWithBytes:source[i].data length:source[i].elemSize() * source[i].total()];
         CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
@@ -184,11 +168,7 @@ using namespace std;
         CGDataProviderRelease(provider);
         CGColorSpaceRelease(colorSpace);
     }
-<<<<<<< Updated upstream
-   return result;
-=======
     return result;
->>>>>>> Stashed changes
 }
 
 @end
