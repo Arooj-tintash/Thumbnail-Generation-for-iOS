@@ -10,13 +10,13 @@ import UIKit
 import AVFoundation
 
 class MainVC: UIViewController {
-    
+
     @IBAction func photoTapped(_ sender: Any) {
         NSLog("TAPPED on image")
         let image = getImageFromBundle()
         performSegue(withIdentifier: "openImageSegue", sender: image)
     }
-    
+
     @IBAction func videoTapped(_ sender: Any) {
         NSLog("TAPPED on video")
         let startingPoint = Date()
@@ -83,8 +83,4 @@ extension MainVC {
         return processImageFromOpenCV
     }
 }
-
-
-
-
 
