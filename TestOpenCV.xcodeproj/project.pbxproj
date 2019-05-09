@@ -15,8 +15,6 @@
 		9A893E152265EE3D0064164E /* fruits.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9A893E142265EE3D0064164E /* fruits.jpg */; };
 		9A8ADE71227AE12700F5CE7F /* thumbnail.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A8ADE70227AE12700F5CE7F /* thumbnail.cpp */; };
 		9A8ADE75227AEE1600F5CE7F /* thumbnail_generation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9A8ADE74227AEE1600F5CE7F /* thumbnail_generation.cpp */; };
-		9AEEC6A02268BCAA004FF9ED /* testVideo.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 9AEEC69F2268BCAA004FF9ED /* testVideo.mp4 */; };
-		9AFCC003227C1B66002D3F52 /* testVideo1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 9AFCC002227C1B66002D3F52 /* testVideo1.mp4 */; };
 		B4E6DA152255F7D4005844D4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4E6DA142255F7D4005844D4 /* AppDelegate.swift */; };
 		B4E6DA1A2255F7D4005844D4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B4E6DA182255F7D4005844D4 /* Main.storyboard */; };
 		B4E6DA1C2255F7D6005844D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B4E6DA1B2255F7D6005844D4 /* Assets.xcassets */; };
@@ -37,6 +35,7 @@
 		9A1D674E227881A800A0585D /* shot_range.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = shot_range.h; sourceTree = "<group>"; };
 		9A1D674F22788FF600A0585D /* gapstat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gapstat.h; sourceTree = "<group>"; };
 		9A2C29672265FBE300B540A4 /* VideoViewVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoViewVC.swift; sourceTree = "<group>"; };
+		9A4A4DC622807B370043F1E6 /* file_helper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = file_helper.h; sourceTree = "<group>"; };
 		9A78AB9F226DED7400E6C32C /* video_parser.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = video_parser.cpp; sourceTree = "<group>"; };
 		9A78ABA0226DED7400E6C32C /* video_parser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = video_parser.h; sourceTree = "<group>"; };
 		9A893E102265EDC70064164E /* TestOpenCV-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TestOpenCV-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -47,8 +46,6 @@
 		9A8ADE72227AE15600F5CE7F /* thumbnail.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = thumbnail.h; sourceTree = "<group>"; };
 		9A8ADE73227AE3FF00F5CE7F /* time.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = time.h; sourceTree = "<group>"; };
 		9A8ADE74227AEE1600F5CE7F /* thumbnail_generation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = thumbnail_generation.cpp; sourceTree = "<group>"; };
-		9AEEC69F2268BCAA004FF9ED /* testVideo.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = testVideo.mp4; sourceTree = "<group>"; };
-		9AFCC002227C1B66002D3F52 /* testVideo1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = testVideo1.mp4; sourceTree = "<group>"; };
 		B4E6DA112255F7D4005844D4 /* TestOpenCV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestOpenCV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4E6DA142255F7D4005844D4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B4E6DA192255F7D4005844D4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -104,24 +101,9 @@
 				9A8ADE72227AE15600F5CE7F /* thumbnail.h */,
 				9A8ADE73227AE3FF00F5CE7F /* time.h */,
 				9A8ADE74227AEE1600F5CE7F /* thumbnail_generation.cpp */,
+				9A4A4DC622807B370043F1E6 /* file_helper.h */,
 			);
 			path = thumbnail_generator;
-			sourceTree = "<group>";
-		};
-		9ADDEA91226B60CD00A55D3B /* hecate */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = hecate;
-			sourceTree = "<group>";
-		};
-		9AEEC69E2268BCAA004FF9ED /* Documents */ = {
-			isa = PBXGroup;
-			children = (
-				9AFCC002227C1B66002D3F52 /* testVideo1.mp4 */,
-				9AEEC69F2268BCAA004FF9ED /* testVideo.mp4 */,
-			);
-			path = Documents;
 			sourceTree = "<group>";
 		};
 		B4E6DA082255F7D4005844D4 = {
@@ -145,7 +127,6 @@
 		B4E6DA132255F7D4005844D4 /* TestOpenCV */ = {
 			isa = PBXGroup;
 			children = (
-				9AEEC69E2268BCAA004FF9ED /* Documents */,
 				B4E6DA2C22560107005844D4 /* Images */,
 				B4E6DA2B2255FEA2005844D4 /* Storyboards */,
 				B4E6DA2A2255FE88005844D4 /* ViewControllers */,
@@ -160,7 +141,6 @@
 			isa = PBXGroup;
 			children = (
 				9A78AB9E226DEA5000E6C32C /* thumbnail_generator */,
-				9ADDEA91226B60CD00A55D3B /* hecate */,
 				9A893E122265EDC80064164E /* OpenCVWrapper.h */,
 				9A893E112265EDC80064164E /* OpenCVWrapper.mm */,
 				B4E6DA282255FE69005844D4 /* MainVC.swift */,
@@ -251,9 +231,7 @@
 				B4E6DA1F2255F7D6005844D4 /* LaunchScreen.storyboard in Resources */,
 				B4E6DA1C2255F7D6005844D4 /* Assets.xcassets in Resources */,
 				B4E6DA1A2255F7D4005844D4 /* Main.storyboard in Resources */,
-				9AEEC6A02268BCAA004FF9ED /* testVideo.mp4 in Resources */,
 				9A893E152265EE3D0064164E /* fruits.jpg in Resources */,
-				9AFCC003227C1B66002D3F52 /* testVideo1.mp4 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -445,6 +423,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4JGMBYYZN2;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/TestOpenCV",
+				);
 				INFOPLIST_FILE = TestOpenCV/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -471,6 +453,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4JGMBYYZN2;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/TestOpenCV",
+				);
 				INFOPLIST_FILE = TestOpenCV/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
