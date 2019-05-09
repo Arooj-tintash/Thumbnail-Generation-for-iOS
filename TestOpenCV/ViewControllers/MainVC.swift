@@ -21,10 +21,10 @@ class MainVC: UIViewController {
         NSLog("TAPPED on video")
         let startingPoint = Date()
         let image = getVideoDataFromBundle()
-        
         print("\(startingPoint.timeIntervalSinceNow * -1) seconds elapsed")
         
         performSegue(withIdentifier: "openImageSegue", sender: image)
+        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -34,6 +34,7 @@ class MainVC: UIViewController {
         destination.image       = image
     }
 }
+
 
 
 extension MainVC {
@@ -54,15 +55,30 @@ extension MainVC {
         return processImage
     }
     
-    func getVideoDataFromBundle() -> NSMutableArray? {
+    func getVideoDataFromBundle() -> UIImage? {
         let videoArray = Bundle.main.paths(forResourcesOfType: "mp4", inDirectory: nil)
-        var processImageFromOpenCV : NSMutableArray? = nil;
-        guard let urlString = videoArray.first else { return nil }
-        let url = URL(fileURLWithPath: urlString)
-        let absURL = (url.absoluteString as NSString) as String
-        let _absURL = absURL.replacingOccurrences(of: "file://", with: "")
         
-        processImageFromOpenCV = OpenCVWrapper.processVideo(_absURL);
+        var processImageFromOpenCV : UIImage? = nil;
+        for index in 0...videoArray.count-1 {
+            
+            print("Starting Processing for Video Index : ")
+            print(index)
+            
+            let urlString = videoArray[index]
+            let url = URL(fileURLWithPath: urlString)
+//            print("URLS")
+//            print(url)
+            let absURL = (url.absoluteString as NSString) as String
+            let _absURL = absURL.replacingOccurrences(of: "file://", with: "")
+//            print(_absURL)
+            processImageFromOpenCV = OpenCVWrapper.processVideo(_absURL);
+            
+            print("Done Processing for Video Index : ")
+            print(index)
+        }
+        
+        
+        
         
         return processImageFromOpenCV
     }

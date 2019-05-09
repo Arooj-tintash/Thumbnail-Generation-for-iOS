@@ -150,7 +150,7 @@ vector<Mat> generate_thumbnails(const string &in_video, thumbnail_params& opt, v
     int frm_idx = 0;
     vector<Mat> generated_frm;
     
-//    string filename = hecate::get_filename( std::string(opt.in_video) );
+    string filename = get_filename( std::string(in_video) );
     
     VideoCapture vr(in_video );
     double rsz_ratio = (double)(2+opt.jpg_width_px)/vr.get(CV_CAP_PROP_FRAME_WIDTH);
@@ -172,6 +172,7 @@ vector<Mat> generate_thumbnails(const string &in_video, thumbnail_params& opt, v
         if( rank>=0 && rank<opt.njpg ) {
             resize( frm, frm, Size(), rsz_ratio, rsz_ratio, CV_INTER_LINEAR );
             frm = frm(Rect(0,0,frm.cols-2,frm.rows));
+//            cout << "\n video name: " << filename.c_str();
 //            sprintf( strbuf, "%s/%s_%02d.jpg",
 //                    opt.out_dir.c_str(), filename.c_str(), rank );
             generated_frm.push_back(frm);
@@ -186,7 +187,5 @@ vector<Mat> generate_thumbnails(const string &in_video, thumbnail_params& opt, v
         frm_idx++;
     }
     vr.release();
-//    for(int i=0; i < generated_frm.size(); i++)
-//        cout << generated_frm[i];
     return generated_frm;
 }

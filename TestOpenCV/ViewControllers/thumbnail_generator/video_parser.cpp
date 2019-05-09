@@ -15,6 +15,19 @@ using namespace cv;
 
 
 /*-----------------------------------------------------------------------*/
+video_parser::video_parser()
+/*-----------------------------------------------------------------------*/
+{
+    _debug = false;
+    _display = false;
+    
+    _nfrm_total = 0;
+    _nfrm_given = 0;
+    
+    _v_shot_ranges.clear();
+}
+
+/*-----------------------------------------------------------------------*/
 void video_parser::release_memory()
 /*-----------------------------------------------------------------------*/
 {
@@ -24,29 +37,7 @@ void video_parser::release_memory()
 
 vector<Mat> video_parser::frameExtraction(const string &in_video)
 {
-    cout << " Frame Extraction from videos ->";
-//    cv::VideoCapture vidCap = cv::VideoCapture(in_video);
-//    if(!vidCap.isOpened()) cout << "Could not open testVideo.mp4";
-//
-//            vector<Mat> _v_frm_rgb;
-//
-//            //Seek video to last frame
-//            bool isFrame = true;
-//            while (isFrame) {
-//                cv::Mat frame;
-//                isFrame = vidCap.read(frame);
-//
-//                if(isFrame){
-//                    _v_frm_rgb.push_back(frame); //get a new frame
-//                }
-//            }
-//    cout << "\n No of frames: " << _v_frm_rgb.size();
-//
-//    for( int i=0; i<_v_frm_rgb.size(); i++ )
-//            {
-//                Mat frm_gray;
-//                cvtColor( _v_frm_rgb[i], frm_gray, CV_BGR2GRAY );
-//            }
+//    cout << "\n Frame Extraction from videos ->";
 
     vector<Mat> generated_frames;
 
@@ -61,7 +52,7 @@ vector<Mat> video_parser::frameExtraction(const string &in_video)
 vector<ShotRange> video_parser::parse_video(const string& filepath, parser_params opt)
 /*-----------------------------------------------------------------------*/
 {
-    cout << "\n Parse Video ->";
+//    cout << "\n Parse Video ->";
     _debug = opt.debug;
     int ret = read_video(filepath, opt.step_sz, opt.max_duration,
                                       opt.ignore_rest);
@@ -118,7 +109,7 @@ int video_parser::read_video(const string& _filepath, int step_sz,
                                      double max_duration, bool ignore_rest,
                                      int max_frm_len)
 {
-    cout << " Read Video ->";
+//    cout << " \n Read Video ->";
     if( _debug )
         printf("VideoParser: read_video(\"%s\", \n\tstep_sz=%d, "
                "max_duration=%.2f, max_frm_len=%d, ignore_rest=%d)\n",
@@ -167,8 +158,11 @@ int video_parser::read_video(const string& _filepath, int step_sz,
         if( frm.empty() ) break;
         
         if( _nfrm_total % _step_sz == 0 ) {
-            if( rsz_ratio>0 )
+//            resize(frm, frm, Size(60, 60), 0, 0, CV_INTER_CUBIC);
+            if( rsz_ratio>0 ) {
+                cout << "Resize condition ";
                 resize( frm, frm, Size(), rsz_ratio, rsz_ratio, CV_INTER_LINEAR );
+            }
             _v_frm_rgb.push_back( frm );
             
             // if video is too long, and ignore_rest is true, cut the rest
@@ -215,10 +209,10 @@ void video_parser::filter_low_quality(double thrsh_bright,
                                              double thrsh_uniform)
 /*-----------------------------------------------------------------------*/
 {
-    cout << "\n Filter low quality frame ->";
+//    cout << "\n Filter low quality frame ->";
     
     // filter at most n percent of the total frames
-    cout << "Value of n frm given in low quality frame: " << _nfrm_given;
+//    cout << "Value of n frm given in low quality frame function: " << _nfrm_given;
     int nfrm_nperc = (int)(0.15*_nfrm_given);
     
     vector<double> v_brightness(_nfrm_given,0.0);
@@ -269,7 +263,6 @@ void video_parser::filter_low_quality(double thrsh_bright,
         if( v_srt_val[_nfrm_given-i-1] >= thrsh_uniform ) {
             
 //            cout << " \n Sorted Values for uniformity " << v_srt_val[i];
-            
             mark_invalid(_v_frm_valid, _v_frm_log, v_srt_idx[_nfrm_given-i-1], "[Uniform]");
         }
     }
@@ -282,7 +275,7 @@ void video_parser::filter_low_quality(double thrsh_bright,
 void video_parser::filter_transition( double thrsh_diff, double thrsh_ecr )
 /*-----------------------------------------------------------------------*/
 {
-    cout << "\n Filter Transition ->";
+//    cout << "\n Filter Transition ->";
     int nfrm_nperc = (int)(0.10*_nfrm_given); // n percent of the total frames
     
     vector<double> v_diff(_nfrm_given, 0.0);
@@ -361,7 +354,7 @@ void video_parser::filter_transition( double thrsh_diff, double thrsh_ecr )
 void video_parser::post_process(double min_shot_sec, bool gfl)
 /*-----------------------------------------------------------------------*/
 {
-    cout << "->\n Post Process ->";
+//    cout << "->\n Post Process ->";
     Segmenter seg;
     int start_idx=-1, end_idx=-1, shotlen=-1;
     int min_shot_len = min_shot_sec * _video_fps / _step_sz;
@@ -457,7 +450,7 @@ void video_parser::extract_histo_features(int pyr_level, bool omit_filtered,
                                           int nbin_edge_mag)
 /*-----------------------------------------------------------------------*/
 {
-    cout << "\n Extract Histo Features ->";
+//    cout << "\n Extract Histo Features ->";
     
     int npatches = 0;
     for(int l=0; l<pyr_level; l++)
@@ -492,7 +485,7 @@ void video_parser::extract_histo_features(int pyr_level, bool omit_filtered,
 void video_parser::filter_redundant_and_obtain_subshots()
 /*-----------------------------------------------------------------------*/
 {
-    cout << " -> Filter redundant Obtain Subshots ->";
+//    cout << " -> Filter redundant Obtain Subshots ->";
     
     if( _v_shot_ranges.empty() )
         update_shot_ranges();
@@ -587,7 +580,7 @@ void video_parser::filter_redundant_and_obtain_subshots()
 void video_parser::update_shot_ranges( int min_shot_len )
 /*-----------------------------------------------------------------------*/
 {
-    cout << " -> Update Shot Ranges ->";
+//    cout << " -> Update Shot Ranges ->";
     
     _v_shot_ranges.clear();
     

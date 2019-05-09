@@ -38,6 +38,7 @@
 #include "video_parser.h"
 #include "time.h"
 #include "shot_range.h"
+#include "file_helper.h"
 
 // OpenCV library
 #include <opencv2/objdetect/objdetect.hpp>
@@ -47,7 +48,9 @@ using namespace std;
 
 // program options
 struct thumbnail_params {
+    
     int step_sz;          // frame subsampling step size
+    string out_dir;
     bool gfl;             // run group-fused lasso as part of shot segmentation
     double fltr_begin_sec_thumb;// always filter out x-second frames at the beginning
     double fltr_end_sec_thumb;  // always filter out x-second frames at the end
@@ -61,6 +64,7 @@ struct thumbnail_params {
     
     thumbnail_params():
     step_sz(1),
+    out_dir("./output"),
     gfl(false),
     fltr_begin_sec_thumb(-1.0),
     fltr_end_sec_thumb(-1.0),
@@ -69,7 +73,7 @@ struct thumbnail_params {
     info_shot(false),
     info_keyfrm(false),
     jpg(true),
-    njpg(5),
+    njpg(3),
     debug(true)
     {};
 };

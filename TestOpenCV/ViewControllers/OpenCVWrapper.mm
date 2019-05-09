@@ -37,7 +37,7 @@ using namespace std;
 + (Mat) _gaussianBlur:(Mat)source;
 
 + (Mat)_matFrom:(UIImage *)source;
-+ (NSMutableArray *)_imageFrom:(vector<Mat>)source;
++ (UIImage *)_imageFrom:(vector<Mat>)source;
 
 //+ (NSMutableArray *) processVideo:(NSString *)filepath;
 
@@ -50,12 +50,12 @@ using namespace std;
 @implementation OpenCVWrapper
 
 #pragma mark Public
-//+ (UIImage *)processImage:(UIImage *)source {
-//    cout << "OpenCV Filters";
-//    return [OpenCVWrapper _imageFrom:[OpenCVWrapper _processImage:[OpenCVWrapper _matFrom:source]]];
-//}
++ (UIImage *)processImage:(UIImage *)source {
+    cout << "OpenCV Filters";
+    return [OpenCVWrapper _imageFrom:[OpenCVWrapper _processImage:[OpenCVWrapper _matFrom:source]]];
+}
 
-+ (NSMutableArray *)processVideo:(NSString *)filepathParam {
++ (UIImage *)processVideo:(NSString *)filepathParam {
     cout << "OpenCV Filters";
     std::string _filepath = std::string([filepathParam UTF8String]);
     
@@ -64,15 +64,19 @@ using namespace std;
 
     size_t sizeOfframes =videoFrame.size();
     cout << "\n Size of frame " << sizeOfframes;
-    vector<Mat> selectedFrame; //= videoFrame[sizeOfframes-1];
+//    Mat selectedFrame = videoFrame[0];
     
+    vector<Mat> selectedFrame;
     selectedFrame.assign( videoFrame.size(), Mat() );
-    
-    for(int i=0; i < sizeOfframes-1; i++) {
+
+    for(int i=0; i < sizeOfframes; i++) {
         Mat rgbFrame;
         cv::cvtColor(videoFrame[i], rgbFrame, CV_BGR2RGB);
         rgbFrame.copyTo(selectedFrame[i]);
     }
+    
+//    Mat rgbFrame;
+//    cv::cvtColor(selectedFrame, rgbFrame, CV_BGR2RGB);
     
     return [OpenCVWrapper _imageFrom: selectedFrame];
 }
@@ -138,12 +142,13 @@ using namespace std;
     return result;
 }
 
-+ (NSMutableArray *)_imageFrom:(vector<Mat>)source {
++ (UIImage *)_imageFrom:(vector<Mat>)source {
     cout << "-> imageFrom\n";
     
-    NSMutableArray *result = [[NSMutableArray alloc] init];
-
-    for(int i=0; i< source.size()-1; i++) {
+    UIImage * result;
+//    vector<NSMutableArray> *result = [[NSMutableArray alloc] init];
+//
+    for(size_t i=0; i < source.size(); i++) {
         NSData *data = [NSData dataWithBytes:source[i].data length:source[i].elemSize() * source[i].total()];
         CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
 
@@ -153,48 +158,16 @@ using namespace std;
         CGColorSpaceRef colorSpace = (source[i].elemSize() == 1 ? CGColorSpaceCreateDeviceGray() : CGColorSpaceCreateDeviceRGB());
 
         CGImageRef image = CGImageCreate(source[i].cols, source[i].rows, bitsPerComponent, bitsPerComponent * source[i].elemSize(), bytesPerRow, colorSpace, bitmapFlags, provider, NULL, false, kCGRenderingIntentDefault);
-        UIImage * resultImg  = [UIImage imageWithCGImage:image];
-        [result addObject:resultImg];
-
+        
+        result  = [UIImage imageWithCGImage:image];
+        //        [result addObject:resultImage];
+        UIImageWriteToSavedPhotosAlbum(result, nil, nil, nil);
+        
         CGImageRelease(image);
         CGDataProviderRelease(provider);
         CGColorSpaceRelease(colorSpace);
     }
-
-//    // Colorspace
-//    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-//
-//    for(int i=0; i < source.size()-1; i++) {
-//    unsigned char* data = new unsigned char[4*source[i].cols*source[i].rows];
-//    for (int y = 0; y < source[i].rows; ++y)
-//    {
-//        cv::Vec3b *ptr = source[i].ptr<cv::Vec3b>(y);
-//        unsigned char *pdata = data + 4*y*source[i].cols;
-//
-//        for (int x = 0; x < source[i].cols; ++x, ++ptr)
-//        {
-//            *pdata++ = (*ptr)[2];
-//            *pdata++ = (*ptr)[1];
-//            *pdata++ = (*ptr)[0];
-//            *pdata++ = 0;
-//        }
-//    }
-//
-//    // Bitmap context
-//    CGContextRef context = CGBitmapContextCreate(data, source[i].cols, source[i].rows, 8, 4*source[i].cols, colorSpace, kCGImageAlphaNoneSkipLast);
-//
-//    CGImageRef cgimage = CGBitmapContextCreateImage(context);
-//    UIImage *resultImg = [UIImage imageWithCGImage:cgimage];
-//    [result addObject:resultImg];
-//
-//    CGColorSpaceRelease(colorSpace);
-//    CGContextRelease(context);
-//    delete[] data;
-//
-//    }
-    
-    
-    return result;
+   return result;
 }
 
 @end

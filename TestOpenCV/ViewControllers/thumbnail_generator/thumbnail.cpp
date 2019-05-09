@@ -53,7 +53,7 @@ vector<Mat> run_thumbnail(const string &in_video, thumbnail_params& opt, vector<
     // PARSE
     v_shot_range = parser.parse_video(in_video, parser_opt );
     if( v_shot_range.empty() ) {
-        fprintf(stderr, "run_hecate: Failed to parse the video\n");
+        fprintf(stderr, "run_thumbnail: Failed to parse the video\n");
 //        return;
     }
     for(size_t i=0; i<v_shot_range.size(); i++) {
@@ -68,7 +68,7 @@ vector<Mat> run_thumbnail(const string &in_video, thumbnail_params& opt, vector<
     
     // Check desired resolution of output
     if( opt.jpg_width_px<0 || opt.jpg_width_px > parser.meta.width ) {
-        fprintf( stderr, "run_hecate: Forcing jpg_width_px to %d\n",parser.meta.width);
+        fprintf( stderr, "run_thumbnail: Forcing jpg_width_px to %d\n",parser.meta.width);
         opt.jpg_width_px = parser.meta.width;
     }
     

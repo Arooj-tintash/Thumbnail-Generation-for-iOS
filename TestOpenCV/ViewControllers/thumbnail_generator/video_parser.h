@@ -77,6 +77,7 @@ struct parser_params {
     
 class video_parser {
 public:
+        video_parser();
     
     /* Temporary thumbnail */
     vector<Mat> frameExtraction(const string& in_video);
